@@ -53,7 +53,7 @@ class Spotify(object):
     max_get_retries = 10
 
     def __init__(self, auth=None, requests_session=True,
-        client_credentials_manager=None, proxies=None, requests_timeout=None):
+        client_credentials_manager=None, proxies=None, requests_timeout=None, oauth=None):
         """
         Create a Spotify API object.
 
@@ -75,6 +75,7 @@ class Spotify(object):
         self.client_credentials_manager = client_credentials_manager
         self.proxies = proxies
         self.requests_timeout = requests_timeout
+        self.oauth = oauth
 
         if isinstance(requests_session, requests.Session):
             self._session = requests_session
@@ -87,12 +88,14 @@ class Spotify(object):
 
     def _auth_headers(self):
         if self._auth:
-            return {'Authorization': 'Bearer {0}'.format(self._auth)}
+            token = self._auth
         elif self.client_credentials_manager:
             token = self.client_credentials_manager.get_access_token()
-            return {'Authorization': 'Bearer {0}'.format(token)}
+        elif self.oauth:
+            token = self.oauth.get_cached_token()['access_token']
         else:
             return {}
+        return {'Authorization': 'Bearer {}'.format(token)}
 
     def _internal_call(self, method, url, payload, params):
         args = dict(params=params)
