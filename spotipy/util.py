@@ -6,8 +6,9 @@ import os
 from . import oauth2
 import spotipy
 
-def prompt_for_user_token(username, scope=None, client_id = None,
-        client_secret = None, redirect_uri = None, cache_path = None):
+def prompt_for_user_token(username, scope=None, client_id=None,
+        client_secret=None, redirect_uri=None, cache_path=None,
+                          token_url=None):
     ''' prompts the user to login if necessary and returns
         the user token suitable for use with the spotipy.Spotify 
         constructor
@@ -23,14 +24,11 @@ def prompt_for_user_token(username, scope=None, client_id = None,
 
     '''
 
-    if not client_id:
-        client_id = os.getenv('SPOTIPY_CLIENT_ID')
+    client_id = client_id or os.getenv('SPOTIPY_CLIENT_ID')
 
-    if not client_secret:
-        client_secret = os.getenv('SPOTIPY_CLIENT_SECRET')
+    client_secret = client_secret or os.getenv('SPOTIPY_CLIENT_SECRET')
 
-    if not redirect_uri:
-        redirect_uri = os.getenv('SPOTIPY_REDIRECT_URI')
+    redirect_uri = redirect_uri or  os.getenv('SPOTIPY_REDIRECT_URI')
 
     if not client_id:
         print('''
@@ -48,7 +46,7 @@ def prompt_for_user_token(username, scope=None, client_id = None,
 
     cache_path = cache_path or ".cache-" + username
     sp_oauth = oauth2.SpotifyOAuth(client_id, client_secret, redirect_uri, 
-        scope=scope, cache_path=cache_path)
+        scope=scope, cache_path=cache_path, token_url=token_url)
 
     # try to get a valid token for this user, from the cache,
     # if not in the cache, the create a new (this will send
