@@ -221,8 +221,8 @@ class SpotifyOAuth(object):
         if self.state:
             payload['state'] = self.state
         if is_refresh_token:
-            _ = payload.pop('code')
-            payload['refresh_token'] = code
+            payload = {'refresh_token': code,
+                       'grant_type': 'refresh_token'}
 
         if not self.custom_token_url:
             headers = self._make_authorization_headers()
