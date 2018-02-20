@@ -205,7 +205,9 @@ class SpotiwiseUser(_SpotiwiseBase):
                  type=None, uri=None, sp=None):
         self.id = id
         if sp:
-            self = SpotiwiseUser(**sp.user(self.id))
+            user = SpotiwiseUser(**sp.user(self.id))
+            for k, v in user.__dict__.items():
+                setattr(self, k, v)
         else:
             self.display_name = display_name or self.id
             self.href = href
