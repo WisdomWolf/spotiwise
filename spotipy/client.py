@@ -427,6 +427,7 @@ class Spotify(object):
         """
         return SpotiwiseTrack(**self._track(track_id))
 
+    # TODO: Migrate to Spotiwise object model
     def tracks(self, tracks, market = None):
         """ returns a list of tracks given a list of track IDs, URIs, or URLs
 
@@ -457,6 +458,7 @@ class Spotify(object):
         
         return SpotiwiseArtist(**self._artist(artist_id))
 
+    # TODO: Migrate to Spotiwise object model
     def artists(self, artists):
         """ returns a list of artists given the artist IDs, URIs, or URLs
 
@@ -467,6 +469,7 @@ class Spotify(object):
         tlist = [self._get_id('artist', a) for a in artists]
         return self._get('artists/?ids=' + ','.join(tlist))
 
+    # TODO: Migrate to Spotiwise object model
     def artist_albums(self, artist_id, album_type=None, country=None, limit=20,
                       offset=0):
         """ Get Spotify catalog information about an artist's albums
@@ -483,6 +486,7 @@ class Spotify(object):
         return self._get('artists/' + trid + '/albums', album_type=album_type,
                          country=country, limit=limit, offset=offset)
 
+    # TODO: Migrate to Spotiwise object model
     def artist_top_tracks(self, artist_id, country='US'):
         """ Get Spotify catalog information about an artist's top 10 tracks
             by country.
@@ -495,6 +499,7 @@ class Spotify(object):
         trid = self._get_id('artist', artist_id)
         return self._get('artists/' + trid + '/top-tracks', country=country)
 
+    # TODO: Migrate to Spotiwise object model
     def artist_related_artists(self, artist_id):
         """ Get Spotify catalog information about artists similar to an
             identified artist. Similarity is based on analysis of the
@@ -525,6 +530,7 @@ class Spotify(object):
         
         return SpotiwiseAlbum(**self._album(album_id))
 
+    # TODO: Migrate to Spotiwise object model
     def album_tracks(self, album_id, limit=50, offset=0):
         """ Get Spotify catalog information about an album's tracks
 
@@ -538,6 +544,7 @@ class Spotify(object):
         return self._get('albums/' + trid + '/tracks/', limit=limit,
                          offset=offset)
 
+    # TODO: Migrate to Spotiwise object model
     def albums(self, albums):
         """ returns a list of albums given the album IDs, URIs, or URLs
 
@@ -561,6 +568,7 @@ class Spotify(object):
         """
         return self._get('search', q=q, limit=limit, offset=offset, type=type, market=market)
 
+    # TODO: Migrate to Spotiwise object model
     def user(self, user):
         """ Gets basic profile information about a Spotify User
 
@@ -569,6 +577,7 @@ class Spotify(object):
         """
         return self._get('users/' + user)
 
+    # TODO: Migrate to Spotiwise object model
     def current_user_playlists(self, limit=50, offset=0):
         """ Get current user playlists without required getting his profile
             Parameters:
@@ -577,6 +586,7 @@ class Spotify(object):
         """
         return self._get("me/playlists", limit=limit, offset=offset)
 
+    # TODO: Migrate to Spotiwise object model
     def user_playlists(self, user, limit=50, offset=0):
         """ Gets playlists of a user
 
@@ -610,6 +620,7 @@ class Spotify(object):
         
         return SpotiwisePlaylist(**self._user_playlist(user, playlist_id, fields), sp=self, precache=precache)
 
+    # TODO: Determine if candidate to migrate to Spotiwise object model or for deprecation
     def user_playlist_tracks(self, user, playlist_id=None, fields=None,
                              limit=100, offset=0, market=None):
         """ Get full details of the tracks of a playlist owned by a user.
@@ -797,23 +808,27 @@ class Spotify(object):
         """
         return self._get("users/{}/playlists/{}/followers/contains?ids={}".format(playlist_owner_id, playlist_id, ','.join(user_ids)))
 
+    # TODO: Migrate to Spotiwise object model
     def me(self):
         """ Get detailed profile information about the current user.
             An alias for the 'current_user' method.
         """
         return self._get('me/')
 
+    # TODO: Determine if candidate to migrate to Spotiwise object model or for deprecation
     def current_user(self):
         """ Get detailed profile information about the current user.
             An alias for the 'me' method.
         """
         return self.me()
-
+    
+    # TODO: Migrate to Spotiwise object model
     def current_user_playing_track(self):
         ''' Get information about the current users currently playing track.
         '''
         return self._get('me/player/currently-playing')
 
+    # TODO: Migrate to Spotiwise object model
     def current_user_saved_albums(self, limit=20, offset=0):
         """ Gets a list of the albums saved in the current authorized user's
             "Your Music" library
@@ -825,6 +840,7 @@ class Spotify(object):
         """
         return self._get('me/albums', limit=limit, offset=offset)
 
+    # TODO: Migrate to Spotiwise object model
     def current_user_saved_tracks(self, limit=20, offset=0):
         """ Gets a list of the tracks saved in the current authorized user's
             "Your Music" library
@@ -836,6 +852,7 @@ class Spotify(object):
         """
         return self._get('me/tracks', limit=limit, offset=offset)
 
+    # TODO: Migrate to Spotiwise object model
     def current_user_followed_artists(self, limit=20, after=None):
         """ Gets a list of the artists followed by the current authorized user
 
@@ -909,6 +926,7 @@ class Spotify(object):
         return self._get('me/top/tracks', time_range=time_range, limit=limit,
                          offset=offset)
 
+    # TODO: Migrate to Spotiwise object model
     def current_user_recently_played(self, limit=50):
         ''' Get the current user's recently played tracks
 
@@ -941,6 +959,7 @@ class Spotify(object):
         '''
         return self._put('me/following?type=user&ids=' + ','.join(ids))
 
+    # TODO: Migrate to Spotiwise object model
     def featured_playlists(self, locale=None, country=None, timestamp=None,
                            limit=20, offset=0):
         """ Get a list of Spotify featured playlists
@@ -968,6 +987,7 @@ class Spotify(object):
                          country=country, timestamp=timestamp, limit=limit,
                          offset=offset)
 
+    # TODO: Migrate to Spotiwise object model
     def new_releases(self, country=None, limit=20, offset=0):
         """ Get a list of new album releases featured in Spotify
 
@@ -984,6 +1004,7 @@ class Spotify(object):
         return self._get('browse/new-releases', country=country, limit=limit,
                          offset=offset)
 
+    # TODO: Migrate to Spotiwise object model??
     def categories(self, country=None, locale=None, limit=20, offset=0):
         """ Get a list of new album releases featured in Spotify
 
@@ -1003,6 +1024,7 @@ class Spotify(object):
         return self._get('browse/categories', country=country, locale=locale,
                          limit=limit, offset=offset)
 
+    # TODO: Migrate to Spotiwise object model??
     def category_playlists(self, category_id=None, country=None, limit=20,
                            offset=0):
         """ Get a list of new album releases featured in Spotify
@@ -1022,6 +1044,7 @@ class Spotify(object):
         return self._get('browse/categories/' + category_id + '/playlists',
                          country=country, limit=limit, offset=offset)
 
+    # TODO: Migrate to Spotiwise object model??
     def recommendations(self, seed_artists=None, seed_genres=None,
                         seed_tracks=None, limit=20, country=None, **kwargs):
         """ Get a list of recommended tracks for one to five seeds.
@@ -1105,11 +1128,13 @@ class Spotify(object):
         id = self._get_id('track', id)
         return self._get('audio-analysis/'+id)
 
+    # TODO: Migrate to Spotiwise object model
     def devices(self):
         ''' Get a list of user's available devices.
         '''
         return self._get("me/player/devices")
 
+    # TODO: Migrate to Spotiwise object model
     def current_playback(self, market = None):
         ''' Get information about user's current playback.
 
@@ -1118,6 +1143,7 @@ class Spotify(object):
         '''
         return self._get("me/player", market = market)
 
+    # TODO: Migrate to Spotiwise object model
     def currently_playing(self, market = None):
         ''' Get user's currently playing track.
 
