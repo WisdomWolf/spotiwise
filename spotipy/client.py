@@ -402,7 +402,7 @@ class Spotify(object):
             Parameters:
                 - track_id - a spotify URI, URL or ID
         """
-        return SpotiwiseTrack(**_track(track_id))
+        return SpotiwiseTrack(**self._track(track_id))
 
     def tracks(self, tracks, market = None):
         """ returns a list of tracks given a list of track IDs, URIs, or URLs
