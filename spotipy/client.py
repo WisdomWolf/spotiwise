@@ -185,7 +185,10 @@ class SpotiwisePlaylist(_SpotiwiseBase):
             while self._tracks['next']:
                 self._tracks = sp.next(self._tracks)
                 self._items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
-        self.tracks = [item.track for item in self._items]
+        try:
+            self.tracks = [item.track for item in self._items]
+        except TypeError:
+            self.tracks = self._tracks
                 
     def __len__(self):
         return len(self.tracks)
