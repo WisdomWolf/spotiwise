@@ -1,2 +1,2 @@
-VERSION='0.6'
+__version__='0.6'
 from .client import Spotify, SpotifyException
