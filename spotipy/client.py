@@ -29,7 +29,7 @@ class SpotifyException(Exception):
             self.http_status, self.code, self.msg)
 
 
-class _SpotipyBase(object):
+class _SpotiwiseBase(object):
 
     sort_keys = ['id', 'name']
     repr_attributes = None
@@ -63,7 +63,7 @@ class _SpotipyBase(object):
             return float('inf')
 
 
-class SpotipyArtist(_SpotipyBase):
+class SpotiwiseArtist(_SpotiwiseBase):
 
     repr_attributes = ['name']
     
@@ -78,7 +78,7 @@ class SpotipyArtist(_SpotipyBase):
         self._kwargs = kwargs
 
 
-class SpotipyAlbum(_SpotipyBase):
+class SpotiwiseAlbum(_SpotiwiseBase):
     
     repr_attributes = ['name', 'artist']
 
@@ -86,7 +86,7 @@ class SpotipyAlbum(_SpotipyBase):
         self.id = id
         self.name = name
         self.external_urls = external_urls or []
-        self._artists = [SpotipyArtist(**artist) if not isinstance(artist, SpotipyArtist) else artist for artist in artists]
+        self._artists = [SpotiwiseArtist(**artist) if not isinstance(artist, SpotiwiseArtist) else artist for artist in artists]
         self.artist = self._artists[0].name
         self.available_markets = available_markets or []
         self.href = href
@@ -100,7 +100,7 @@ class SpotipyAlbum(_SpotipyBase):
         return '{}({})'.format(self.__class__.__name__, '
 
 
-class SpotipyTrack(_SpotipyBase):
+class SpotiwiseTrack(_SpotiwiseBase):
                                
     repr_attributes = ['name', 'artist']
 
@@ -112,11 +112,11 @@ class SpotipyTrack(_SpotipyBase):
           #  print('{}: {}\n'.format(param, value))
         self.id = id
         self.name = name
-        if isinstance(album, SpotipyAlbum):
+        if isinstance(album, SpotiwiseAlbum):
             self.album = album
         else:
-            self.album = SpotipyAlbum(**album)
-        self._artists = [SpotipyArtist(**artist) if not isinstance(artist, SpotipyArtist) else artist for artist in artists]
+            self.album = SpotiwiseAlbum(**album)
+        self._artists = [SpotiwiseArtist(**artist) if not isinstance(artist, SpotiwiseArtist) else artist for artist in artists]
         self.artist = self._artists[0].name
         self.available_markets = available_markets or []
         self.disc_number = disc_number
@@ -136,13 +136,15 @@ class SpotipyTrack(_SpotipyBase):
         self._kwargs = kwargs
 
 
-class SpotipyPlayback(_SpotipyBase):
+class SpotiwisePlayback(_SpotiwiseBase):
 
     def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):
        # print('__init__ received')
      #   for param, value in locals().items():
          #   print('{}: {}\n'.format(param, value))
-        self.track = item if isinstance(item, SpotipyTrack) else SpotipyTrack(**item)
+        self.track = item if isinstance(item, SpotiwiseTrack) else SpotiwiseTrack(**item) # will eventually point to self.item.track
+        self.item = item if isinstance(item, SpotiwiseTrack) else SpotiwiseTrack(**item)
+        self.ttrack = self.item.track # will replace track attribute eventually
         self.timestamp = timestamp or time.time()
         self.epoch_timestamp = self.timestamp // 1000
         self.progress_ms = progress_ms or 0
@@ -156,16 +158,16 @@ class SpotipyPlayback(_SpotipyBase):
         return round(self.progress_ms / self.track.duration_ms * 100, 0)
 
 
-class SpotipyItem(_SpotipyBase):
+class SpotiwiseItem(_SpotiwiseBase):
 
     def __init__(self, track, added_at=None, added_by='', is_local=False):
-        self.track = track if isinstance(track, SpotipyTrack) else SpotipyTrack(**track)
+        self.track = track if isinstance(track, SpotiwiseTrack) else SpotiwiseTrack(**track)
         self.added_at = added_at
         self.added_by = added_by
         self.is_local = is_local
 
 
-class SpotipyPlaylist(_SpotipyBase):
+class SpotiwisePlaylist(_SpotiwiseBase):
                                
     repr_attributes = ['name', 'owner', 'collaborative', 'description']
 
@@ -186,11 +188,11 @@ class SpotipyPlaylist(_SpotipyBase):
         self._tracks = tracks
         self.type = type
         self.uri = uri
-        self.tracks = [SpotipyItem(**item) for item in self._tracks.get('items')]
+        self.tracks = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
         if precache:
             while self._tracks['next']:
                 self._tracks = sp.next(self._tracks)
-                self.tracks.extend([SpotipyItem(**item) for item in self._tracks.get('items')])
+                self.tracks.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
                 
    def __len__(self):
        return len(self.tracks)
@@ -387,7 +389,7 @@ class Spotify(object):
     def _warn(self, msg, *args):
         print('warning:' + msg.format(*args), file=sys.stderr)
 
-    def track(self, track_id):
+    def _track(self, track_id):
         """ returns a single track given the track's ID, URI or URL
 
             Parameters:
@@ -396,6 +398,14 @@ class Spotify(object):
 
         trid = self._get_id('track', track_id)
         return self._get('tracks/' + trid)
+                               
+    def track(self, track_id):
+        """ return a single track object given the track's ID, URI, or URL
+        
+            Parameters:
+                - track_id - a spotify URI, URL or ID
+        """
+        return SpotiwiseTrack(**_track(track_id))
 
     def tracks(self, tracks, market = None):
         """ returns a list of tracks given a list of track IDs, URIs, or URLs
