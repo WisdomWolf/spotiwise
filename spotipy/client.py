@@ -191,8 +191,8 @@ class SpotiwisePlaylist(_SpotiwiseBase):
                 self._tracks = sp.next(self._tracks)
                 self.tracks.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
                 
-   def __len__(self):
-       return len(self.tracks)
+    def __len__(self):
+        return len(self.tracks)
 
 
 class Spotify(object):
