@@ -1,5 +1,2 @@
-version = {}
-with open('version.py') as f:
-    exec(f.read(), version)
-VERSION=version['__version__']
+VERSION='0.6'
 from .client import Spotify, SpotifyException

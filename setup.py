@@ -1,11 +1,9 @@
 from setuptools import setup
+import spotipy
 
-version = {}
-with open('spotipy/version.py') as f:
-    exec(f.read(), version)
 setup(
     name='spotwise',
-    version=version['__version__'],
+    version=spotipy.__version__,
     description='simple client for the Spotify Web API',
     author="WisdomWolf",
     author_email="wisdomwolf@gmail.com",
