@@ -161,7 +161,7 @@ class SpotiwiseItem(_SpotiwiseBase):
     def __init__(self, track, added_at=None, added_by='', is_local=False):
         self.track = track if isinstance(track, SpotiwiseTrack) else SpotiwiseTrack(**track)
         self.added_at = added_at
-        self.added_by = added_by
+        self.added_by = added_by if isinstance(added_by, SpotiwiseUser) else SpotiwiseUser(**added_by)
         self.is_local = is_local
 
 
@@ -174,7 +174,7 @@ class SpotiwisePlaylist(_SpotiwiseBase):
     uri=None, sp=None, precache=False):
         self.id = id
         self.name = name
-        self.owner = owner
+        self.owner = owner if isinstance(owner, SpotiwiseUser) else SpotiwiseUser(**owner, sp=sp)
         self.collaborative = collaborative
         self.description = description
         self.external_urls = external_urls
@@ -186,14 +186,34 @@ class SpotiwisePlaylist(_SpotiwiseBase):
         self._tracks = tracks
         self.type = type
         self.uri = uri
-        self.tracks = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
+        self.items = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
         if precache:
             while self._tracks['next']:
                 self._tracks = sp.next(self._tracks)
-                self.tracks.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
+                self.items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
+        self.tracks = [item.track for item in self.items]
                 
     def __len__(self):
         return len(self.tracks)
+    
+    
+class SpotiwiseUser(_SpotiwiseBase):
+    
+    repr_attributes = ['display_name']
+    
+    def __init__(self, id, display_name=None, href=None, external_urls=None, images=None, followers=None, 
+                 type=None, uri=None, sp=None):
+        self.id = id
+        if sp:
+            self = SpotiwiseUser(**sp.user(self.id))
+        else:
+            self.display_name = display_name or self.id
+            self.href = href
+            self.external_urls = external_urls
+            self.images = images
+            self.followers = followers
+            self.type = type
+            self.uri = uri
 
 
 class Spotify(object):
