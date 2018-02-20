@@ -31,6 +31,9 @@ class SpotifyException(Exception):
 
 class _SpotipyBase(object):
 
+    sort_keys = ['id', 'name']
+    repr_attributes = None
+    
     def __init__(self, href=None, type=None, uri=None):
         self.href = href
         self.type = type
@@ -38,7 +41,12 @@ class _SpotipyBase(object):
 
     def __repr__(self):
         repr_list = []
-        for k, v in self.__dict__.items():
+        repr_attributes = self.repr_attributes or self.__dict__.keys()
+        for k in repr_attributes:
+            try:
+                v = getattr(self, k)
+            except AttributeError:
+                v = None
             if v:
                 if isinstance(v, date):
                     v = '{:%m/%d/%Y}'.format(v)
@@ -46,20 +54,19 @@ class _SpotipyBase(object):
                 repr_list.append('{}={}'.format(k, v))
         return '{}({})'.format(self.__class__.__name__, ', '.join(sorted(repr_list, key=self._sort)))
 
-    @staticmethod
-    def _sort(key):
+    def _sort(self, key):
         '''Used to ensure certain attributes are listed first'''
         key = key.split(':')[0].lower()
-        sort_keys = ['id', 'name'] # Should probably be a class variable so that it can be easily overridden
         try:
-            return sort_keys.index(key)
+            return self.sort_keys.index(key)
         except ValueError:
             return float('inf')
 
 
-
 class SpotipyArtist(_SpotipyBase):
 
+    repr_attributes = ['name']
+    
     def __init__(self, id, name, external_urls=None, href=None, type=None, uri=None, *args, **kwargs):
         self.id = id
         self.name = name
@@ -72,6 +79,8 @@ class SpotipyArtist(_SpotipyBase):
 
 
 class SpotipyAlbum(_SpotipyBase):
+    
+    repr_attributes = ['name', 'artist']
 
     def __init__(self, id, name, album_type=None, artists=None, available_markets=None, external_urls=None, href=None, images=None, type=None, uri=None, *args, **kwargs):
         self.id = id
@@ -86,9 +95,14 @@ class SpotipyAlbum(_SpotipyBase):
         self.uri = uri
         self._args = args
         self._kwargs = kwargs
+        
+    def __repr__(self):
+        return '{}({})'.format(self.__class__.__name__, '
 
 
 class SpotipyTrack(_SpotipyBase):
+                               
+    repr_attributes = ['name', 'artist']
 
     def __init__(self, id, name, album, artists, available_markets=None, disc_number=None, 
     duration_ms=0, explicit=False, external_ids=None, external_urls=None, href=None, 
@@ -117,6 +131,7 @@ class SpotipyTrack(_SpotipyBase):
         self.track_number = track_number
         self.type = type
         self.uri = uri
+        self.playcount = 0
         self._args = args
         self._kwargs = kwargs
 
@@ -141,10 +156,22 @@ class SpotipyPlayback(_SpotipyBase):
         return round(self.progress_ms / self.track.duration_ms * 100, 0)
 
 
+class SpotipyItem(_SpotipyBase):
+
+    def __init__(self, track, added_at=None, added_by='', is_local=False):
+        self.track = track if isinstance(track, SpotipyTrack) else SpotipyTrack(**track)
+        self.added_at = added_at
+        self.added_by = added_by
+        self.is_local = is_local
+
+
 class SpotipyPlaylist(_SpotipyBase):
+                               
+    repr_attributes = ['name', 'owner', 'collaborative', 'description']
 
     def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None, 
-    followers=None, href=None, images=None, public=True, snapshot_id=None, tracks=None, type=None, uri=None, sp=None, precache=False):
+    followers=None, href=None, images=None, public=True, snapshot_id=None, tracks=None, type=None, 
+    uri=None, sp=None, precache=False):
         self.id = id
         self.name = name
         self.owner = owner
@@ -159,11 +186,14 @@ class SpotipyPlaylist(_SpotipyBase):
         self._tracks = tracks
         self.type = type
         self.uri = uri
-        self.tracks = [SpotipyTrack(**track.get('track')) for track in self._tracks.get('items')]
+        self.tracks = [SpotipyItem(**item) for item in self._tracks.get('items')]
         if precache:
             while self._tracks['next']:
                 self._tracks = sp.next(self._tracks)
-                self.tracks.extend([SpotipyTrack(**track.get('track')) for track in self._tracks.get('items')])
+                self.tracks.extend([SpotipyItem(**item) for item in self._tracks.get('items')])
+                
+   def __len__(self):
+       return len(self.tracks)
 
 
 class Spotify(object):
