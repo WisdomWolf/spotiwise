@@ -1,11 +1,11 @@
 from setuptools import setup
 
 setup(
-    name='spotipy',
-    version='2.5.2',
+    name='spotwise',
+    version='0.5.2',
     description='simple client for the Spotify Web API',
-    author="@plamere",
-    author_email="paul@echonest.com",
+    author="WisdomWolf",
+    author_email="wisdomwolf@gmail.com",
     url='http://spotipy.readthedocs.org/',
     install_requires=[
         'requests>=2.3.0',
