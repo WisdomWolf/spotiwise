@@ -105,15 +105,9 @@ class SpotiwiseTrack(_SpotiwiseBase):
     def __init__(self, id, name, album, artists, available_markets=None, disc_number=None, 
     duration_ms=0, explicit=False, external_ids=None, external_urls=None, href=None, 
     popularity=None, preview_url=None, track_number=None, type=None, uri=None, *args, **kwargs):
-        #print('__init__ received')
-       # for param, value in locals().items():
-          #  print('{}: {}\n'.format(param, value))
         self.id = id
         self.name = name
-        if isinstance(album, SpotiwiseAlbum):
-            self.album = album
-        else:
-            self.album = SpotiwiseAlbum(**album)
+        self.album = album if isinstance(album, SpotiwiseAlbum) else SpotiwiseAlbum(**album)
         self._artists = [SpotiwiseArtist(**artist) if not isinstance(artist, SpotiwiseArtist) else artist for artist in artists]
         self.artist = self._artists[0].name
         self.available_markets = available_markets or []
@@ -137,9 +131,6 @@ class SpotiwiseTrack(_SpotiwiseBase):
 class SpotiwisePlayback(_SpotiwiseBase):
 
     def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):
-       # print('__init__ received')
-     #   for param, value in locals().items():
-         #   print('{}: {}\n'.format(param, value))
         self.track = item if isinstance(item, SpotiwiseTrack) else SpotiwiseTrack(**item) # will eventually point to self.item.track
         self.item = item if isinstance(item, SpotiwiseTrack) else SpotiwiseTrack(**item)
         self.ttrack = self.item.track # will replace track attribute eventually
@@ -186,12 +177,15 @@ class SpotiwisePlaylist(_SpotiwiseBase):
         self._tracks = tracks
         self.type = type
         self.uri = uri
-        self.items = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
+        try:
+            self._items = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
+        except TypeError: # Uninstantiated playlist (possibly from current_user_playlists())
+            self._items = None
         if precache:
             while self._tracks['next']:
                 self._tracks = sp.next(self._tracks)
-                self.items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
-        self.tracks = [item.track for item in self.items]
+                self._items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
+        self.tracks = [item.track for item in self._items]
                 
     def __len__(self):
         return len(self.tracks)
@@ -205,7 +199,7 @@ class SpotiwiseUser(_SpotiwiseBase):
                  type=None, uri=None, sp=None):
         self.id = id
         if sp:
-            user = SpotiwiseUser(**sp.user(self.id))
+            user = SpotiwiseUser(**sp._user(self.id))
             for k, v in user.__dict__.items():
                 setattr(self, k, v)
         else:
@@ -427,9 +421,8 @@ class Spotify(object):
         """
         return SpotiwiseTrack(**self._track(track_id))
 
-    # TODO: Migrate to Spotiwise object model
-    def tracks(self, tracks, market = None):
-        """ returns a list of tracks given a list of track IDs, URIs, or URLs
+    def _tracks(self, tracks, market=None):
+        """ returns raw JSON for a list of tracks given a list of track IDs, URIs, or URLs
 
             Parameters:
                 - tracks - a list of spotify URIs, URLs or IDs
@@ -438,6 +431,18 @@ class Spotify(object):
 
         tlist = [self._get_id('track', t) for t in tracks]
         return self._get('tracks/?ids=' + ','.join(tlist), market = market)
+    
+    # TODO: Verify migration to Spotiwise object model
+    def tracks(self, tracks, market=None):
+        """ returns a list of tracks given a list of track IDs, URIs, or URLs
+
+            Parameters:
+                - tracks - a list of spotify URIs, URLs or IDs
+                - market - an ISO 3166-1 alpha-2 country code.
+        """
+        
+        results = self._tracks(tracks, market).get('tracks')
+        return [SpotiwiseTrack(**track) for track in results]
 
     def _artist(self, artist_id):
         """ returns raw JSON for a single artist given the artist's ID, URI or URL
@@ -458,8 +463,7 @@ class Spotify(object):
         
         return SpotiwiseArtist(**self._artist(artist_id))
 
-    # TODO: Migrate to Spotiwise object model
-    def artists(self, artists):
+    def _artists(self, artists):
         """ returns a list of artists given the artist IDs, URIs, or URLs
 
             Parameters:
@@ -468,6 +472,18 @@ class Spotify(object):
 
         tlist = [self._get_id('artist', a) for a in artists]
         return self._get('artists/?ids=' + ','.join(tlist))
+    
+    # TODO: Verify migration to Spotiwise object model
+    def artists(self, artists):
+        """ returns a list of artists given the artist IDs, URIs, or URLs
+
+            Parameters:
+                - artists - a list of  artist IDs, URIs or URLs
+        """
+        
+        results = self._artists(artists).get('artists')
+        return [SpotiwiseArtist(**artist) for artist in results]
+
 
     # TODO: Migrate to Spotiwise object model
     def artist_albums(self, artist_id, album_type=None, country=None, limit=20,
@@ -486,9 +502,8 @@ class Spotify(object):
         return self._get('artists/' + trid + '/albums', album_type=album_type,
                          country=country, limit=limit, offset=offset)
 
-    # TODO: Migrate to Spotiwise object model
-    def artist_top_tracks(self, artist_id, country='US'):
-        """ Get Spotify catalog information about an artist's top 10 tracks
+    def _artist_top_tracks(self, artist_id, country='US'):
+        """ Get raw JSON for Spotify catalog information about an artist's top 10 tracks
             by country.
 
             Parameters:
@@ -498,10 +513,22 @@ class Spotify(object):
 
         trid = self._get_id('artist', artist_id)
         return self._get('artists/' + trid + '/top-tracks', country=country)
+    
+    # TODO: Verify migration to Spotiwise object model
+    def artist_top_tracks(self, artist_id, country='US'):
+        """ Get Spotify catalog information about an artist's top 10 tracks
+            by country.
 
-    # TODO: Migrate to Spotiwise object model
-    def artist_related_artists(self, artist_id):
-        """ Get Spotify catalog information about artists similar to an
+            Parameters:
+                - artist_id - the artist ID, URI or URL
+                - country - limit the response to one particular country.
+        """
+        
+        results = self._tracks(tracks, country).get('tracks')
+        return [SpotiwiseTrack(**track) for track in results]
+
+    def _artist_related_artists(self, artist_id):
+        """ Get raw JSON for Spotify catalog information about artists similar to an
             identified artist. Similarity is based on analysis of the
             Spotify community's listening history.
 
@@ -510,6 +537,19 @@ class Spotify(object):
         """
         trid = self._get_id('artist', artist_id)
         return self._get('artists/' + trid + '/related-artists')
+    
+    # TODO: Verify migration to Spotiwise object model
+    def artist_related_artists(self, artist_id):
+        """ Get Spotify catalog information about artists similar to an
+            identified artist. Similarity is based on analysis of the
+            Spotify community's listening history.
+
+            Parameters:
+                - artist_id - the artist ID, URI or URL
+        """
+        
+        results = self._artists(artists).get('artists')
+        return [SpotiwiseArtist(**artist) for artist in results]
 
     def _album(self, album_id):
         """ returns raw JSON for a single album given the album's ID, URIs or URL
@@ -544,9 +584,8 @@ class Spotify(object):
         return self._get('albums/' + trid + '/tracks/', limit=limit,
                          offset=offset)
 
-    # TODO: Migrate to Spotiwise object model
-    def albums(self, albums):
-        """ returns a list of albums given the album IDs, URIs, or URLs
+    def _albums(self, albums):
+        """ returns raw JSON for a list of albums given the album IDs, URIs, or URLs
 
             Parameters:
                 - albums - a list of  album IDs, URIs or URLs
@@ -554,6 +593,17 @@ class Spotify(object):
 
         tlist = [self._get_id('album', a) for a in albums]
         return self._get('albums/?ids=' + ','.join(tlist))
+    
+    # TODO: Verify migration to Spotiwise object model
+    def albums(self, albums):
+        """ returns a list of albums given the album IDs, URIs, or URLs
+
+            Parameters:
+                - albums - a list of  album IDs, URIs or URLs
+        """
+        
+        results = self._albums(albums).get('albums')
+        return [SpotiwiseAlbum(**album) for album in results]
 
     def search(self, q, limit=10, offset=0, type='track', market=None):
         """ searches for an item
@@ -568,23 +618,40 @@ class Spotify(object):
         """
         return self._get('search', q=q, limit=limit, offset=offset, type=type, market=market)
 
-    # TODO: Migrate to Spotiwise object model
+    def _user(self, user):
+        """ Gets raw JSON for basic profile information about a Spotify User
+
+            Parameters:
+                - user - the id of the usr
+        """
+        return self._get('users/' + user)
+    
+    # TODO: Verify migration to Spotiwise object model
     def user(self, user):
         """ Gets basic profile information about a Spotify User
 
             Parameters:
                 - user - the id of the usr
         """
-        return self._get('users/' + user)
+        return SpotiwiseUser(**self._user(user))
 
-    # TODO: Migrate to Spotiwise object model
+    def _current_user_playlists(self, limit=50, offset=0):
+        """ Get raw JSON for current user playlists without required getting his profile
+            Parameters:
+                - limit  - the number of items to return
+                - offset - the index of the first item to return
+        """
+        return self._get("me/playlists", limit=limit, offset=offset)
+    
+    # TODO: Verify migration to Spotiwise object model
     def current_user_playlists(self, limit=50, offset=0):
         """ Get current user playlists without required getting his profile
             Parameters:
                 - limit  - the number of items to return
                 - offset - the index of the first item to return
         """
-        return self._get("me/playlists", limit=limit, offset=offset)
+        results = self._current_user_playlists(limit, offset)
+        return [SpotiwisePlaylist(**playlist) for playlist in results]
 
     # TODO: Migrate to Spotiwise object model
     def user_playlists(self, user, limit=50, offset=0):
