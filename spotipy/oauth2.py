@@ -7,7 +7,24 @@ import json
 import time
 import sys
 
-from example_api_gateway import get_aws_auth
+import re
+from urllib import parse as urlparse
+from aws_requests_auth.aws_auth import AWSRequestsAuth
+from aws_requests_auth import boto_utils
+
+def get_aws_auth(url):
+    api_gateway_netloc = urlparse.urlparse(url).netloc
+    api_gateway_region = re.match(
+        r"[a-z0-9]+\.execute-api\.(.+)\.amazonaws\.com",
+        api_gateway_netloc
+    ).group(1)
+
+    return AWSRequestsAuth(
+        aws_host=api_gateway_netloc,
+        aws_region=api_gateway_region,
+        aws_service='execute-api',
+        **boto_utils.get_credentials()
+    )
 
 # Workaround to support both python 2 & 3
 import six
