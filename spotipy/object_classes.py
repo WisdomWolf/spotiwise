@@ -1,3 +1,5 @@
+from datetime import date
+
 class _SpotiwiseBase(object):
 
     sort_keys = ['id', 'name']
