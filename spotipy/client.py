@@ -416,8 +416,8 @@ class Spotify(object):
         tlist = [self._get_id('track', t) for t in tracks]
         return self._get('tracks/?ids=' + ','.join(tlist), market = market)
 
-    def artist(self, artist_id):
-        """ returns a single artist given the artist's ID, URI or URL
+    def _artist(self, artist_id):
+        """ returns raw JSON for a single artist given the artist's ID, URI or URL
 
             Parameters:
                 - artist_id - an artist ID, URI or URL
@@ -425,6 +425,15 @@ class Spotify(object):
 
         trid = self._get_id('artist', artist_id)
         return self._get('artists/' + trid)
+    
+    def artist(self, artist_id):
+        """ returns a single artist given the artist's ID, URI or URL
+
+            Parameters:
+                - artist_id - an artist ID, URI or URL
+        """
+        
+        return SpotiwiseArtist(**self._artist(artist_id))
 
     def artists(self, artists):
         """ returns a list of artists given the artist IDs, URIs, or URLs
@@ -475,8 +484,8 @@ class Spotify(object):
         trid = self._get_id('artist', artist_id)
         return self._get('artists/' + trid + '/related-artists')
 
-    def album(self, album_id):
-        """ returns a single album given the album's ID, URIs or URL
+    def _album(self, album_id):
+        """ returns raw JSON for a single album given the album's ID, URIs or URL
 
             Parameters:
                 - album_id - the album ID, URI or URL
@@ -484,6 +493,15 @@ class Spotify(object):
 
         trid = self._get_id('album', album_id)
         return self._get('albums/' + trid)
+    
+    def album(self, album_id):
+        """ returns a single album given the album's ID, URIs or URL
+
+            Parameters:
+                - album_id - the album ID, URI or URL
+        """
+        
+        return SpotiwiseAlbum(**self._album(album_id))
 
     def album_tracks(self, album_id, limit=50, offset=0):
         """ Get Spotify catalog information about an album's tracks
@@ -548,7 +566,7 @@ class Spotify(object):
         return self._get("users/%s/playlists" % user, limit=limit,
                          offset=offset)
 
-    def user_playlist(self, user, playlist_id=None, fields=None):
+    def _user_playlist(self, user, playlist_id=None, fields=None):
         """ Gets playlist of a user
             Parameters:
                 - user - the id of the user
@@ -559,6 +577,16 @@ class Spotify(object):
             return self._get("users/%s/starred" % (user), fields=fields)
         plid = self._get_id('playlist', playlist_id)
         return self._get("users/%s/playlists/%s" % (user, plid), fields=fields)
+    
+    def user_playlist(self, user, playlist_id=None, fields=None, precache=False):
+        """ Gets playlist of a user
+            Parameters:
+                - user - the id of the user
+                - playlist_id - the id of the playlist
+                - fields - which fields to return
+        """
+        
+        return SpotiwisePlaylist(**self._user_playlist(user, playlist_id, fields), sp=self, precache=precache)
 
     def user_playlist_tracks(self, user, playlist_id=None, fields=None,
                              limit=100, offset=0, market=None):
