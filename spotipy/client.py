@@ -95,9 +95,6 @@ class SpotiwiseAlbum(_SpotiwiseBase):
         self.uri = uri
         self._args = args
         self._kwargs = kwargs
-        
-    def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, '
 
 
 class SpotiwiseTrack(_SpotiwiseBase):
