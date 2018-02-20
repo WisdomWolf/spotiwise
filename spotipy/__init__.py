@@ -1,2 +1,2 @@
-VERSION='0.5.2'
-from .client import Spotify, SpotifyException, SpotiwiseArtist
+VERSION='0.6'
+from .client import Spotify, SpotifyException
