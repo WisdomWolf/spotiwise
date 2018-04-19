@@ -53,11 +53,11 @@ __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, album_type
 __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, external_urls=None, href=None, type=None, uri=None, *args, **kwargs):$/;"	m	class:SpotiwiseArtist
 __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None,$/;"	m	class:SpotiwisePlaylist
 __init__	spotipy/object_classes.py	/^    def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):$/;"	m	class:SpotiwisePlayback
-__init__	spotipy/object_classes.py	/^    def __init__(self, track, added_at=None, added_by='', is_local=False):$/;"	m	class:SpotiwiseItem
+__init__	spotipy/object_classes.py	/^    def __init__(self, track, added_at=None, added_by='', is_local=False, *args, **kwargs):$/;"	m	class:SpotiwiseItem
 __len__	spotipy/object_classes.py	/^    def __len__(self):$/;"	m	class:SpotiwisePlaylist	file:
 __repr__	spotipy/object_classes.py	/^    def __repr__(self):$/;"	m	class:_SpotiwiseBase	file:
 __str__	spotipy/client.py	/^    def __str__(self):$/;"	m	class:SpotifyException	file:
-__version__	spotipy/__init__.py	/^__version__='0.6.1'$/;"	v
+__version__	spotipy/__init__.py	/^__version__='0.6.2'$/;"	v
 _add_custom_values_to_token_info	spotipy/oauth2.py	/^    def _add_custom_values_to_token_info(self, token_info):$/;"	m	class:SpotifyClientCredentials
 _add_custom_values_to_token_info	spotipy/oauth2.py	/^    def _add_custom_values_to_token_info(self, token_info):$/;"	m	class:SpotifyOAuth
 _album	spotipy/client.py	/^    def _album(self, album_id):$/;"	m	class:Spotify

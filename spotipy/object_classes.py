@@ -119,7 +119,7 @@ class SpotiwisePlayback(_SpotiwiseBase):
 
 class SpotiwiseItem(_SpotiwiseBase):
 
-    def __init__(self, track, added_at=None, added_by='', is_local=False):
+    def __init__(self, track, added_at=None, added_by='', is_local=False, *args, **kwargs):
         self.track = track if isinstance(track, SpotiwiseTrack) else SpotiwiseTrack(**track)
         self.added_at = added_at
         self.added_by = added_by if isinstance(added_by, SpotiwiseUser) else SpotiwiseUser(**added_by)
