@@ -42,6 +42,8 @@ SpotiwiseUser	spotipy/object_classes.py	/^class SpotiwiseUser(_SpotiwiseBase):$/
 TestSpotifyOAuth	tests/test_oauth.py	/^class TestSpotifyOAuth(unittest.TestCase):$/;"	c
 TestSpotipy	tests/tests.py	/^class TestSpotipy(unittest.TestCase):$/;"	c
 _SpotiwiseBase	spotipy/object_classes.py	/^class _SpotiwiseBase(object):$/;"	c
+__eq__	spotipy/object_classes.py	/^    def __eq__(x, y):$/;"	m	class:SpotiwiseUser	file:
+__hash__	spotipy/object_classes.py	/^    def __hash__(self):$/;"	m	class:SpotiwiseUser	file:
 __init__	spotipy/client.py	/^    def __init__(self, auth=None, requests_session=True,$/;"	m	class:Spotify
 __init__	spotipy/client.py	/^    def __init__(self, http_status, code, msg, headers=None):$/;"	m	class:SpotifyException
 __init__	spotipy/oauth2.py	/^    def __init__(self, client_id, client_secret, redirect_uri,$/;"	m	class:SpotifyOAuth
@@ -54,10 +56,11 @@ __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, external_u
 __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None,$/;"	m	class:SpotiwisePlaylist
 __init__	spotipy/object_classes.py	/^    def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):$/;"	m	class:SpotiwisePlayback
 __init__	spotipy/object_classes.py	/^    def __init__(self, track, added_at=None, added_by='', is_local=False, *args, **kwargs):$/;"	m	class:SpotiwiseItem
+__key	spotipy/object_classes.py	/^    def __key(self):$/;"	m	class:SpotiwiseUser	file:
 __len__	spotipy/object_classes.py	/^    def __len__(self):$/;"	m	class:SpotiwisePlaylist	file:
 __repr__	spotipy/object_classes.py	/^    def __repr__(self):$/;"	m	class:_SpotiwiseBase	file:
 __str__	spotipy/client.py	/^    def __str__(self):$/;"	m	class:SpotifyException	file:
-__version__	spotipy/__init__.py	/^__version__='0.6.2'$/;"	v
+__version__	spotipy/__init__.py	/^__version__='0.6.3'$/;"	v
 _add_custom_values_to_token_info	spotipy/oauth2.py	/^    def _add_custom_values_to_token_info(self, token_info):$/;"	m	class:SpotifyClientCredentials
 _add_custom_values_to_token_info	spotipy/oauth2.py	/^    def _add_custom_values_to_token_info(self, token_info):$/;"	m	class:SpotifyOAuth
 _album	spotipy/client.py	/^    def _album(self, album_id):$/;"	m	class:Spotify

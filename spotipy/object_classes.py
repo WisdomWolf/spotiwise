@@ -148,15 +148,15 @@ class SpotiwisePlaylist(_SpotiwiseBase):
         self.type = type
         self.uri = uri
         try:
-            self._items = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
+            self.items = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
         except TypeError: # Uninstantiated playlist (possibly from current_user_playlists())
-            self._items = None
+            self.items = None
         if precache:
             while self._tracks['next']:
                 self._tracks = sp.next(self._tracks)
-                self._items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
+                self.items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
         try:
-            self.tracks = [item.track for item in self._items]
+            self.tracks = [item.track for item in self.items]
         except TypeError:
             self.tracks = self._tracks
                 
@@ -183,3 +183,13 @@ class SpotiwiseUser(_SpotiwiseBase):
             self.followers = followers
             self.type = type
             self.uri = uri
+
+    def __key(self):
+        return (self.id, self.display_name, self.type, self.uri)
+
+    def __eq__(x, y):
+        return x.__key() == y.__key()
+
+    def __hash__(self):
+        return hash(self.__keys())
+
