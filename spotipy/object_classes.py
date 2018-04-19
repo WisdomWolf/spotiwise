@@ -191,5 +191,5 @@ class SpotiwiseUser(_SpotiwiseBase):
         return x.__key() == y.__key()
 
     def __hash__(self):
-        return hash(self.__keys())
+        return hash(self.__key())
 
