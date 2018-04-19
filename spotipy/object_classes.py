@@ -127,12 +127,12 @@ class SpotiwiseItem(_SpotiwiseBase):
 
 
 class SpotiwisePlaylist(_SpotiwiseBase):
-                               
+
     repr_attributes = ['name', 'owner', 'collaborative', 'description']
 
-    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None, 
-    followers=None, href=None, images=None, public=True, snapshot_id=None, tracks=None, type=None, 
-    uri=None, sp=None, precache=False):
+    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None,
+    followers=None, href=None, images=None, public=True, snapshot_id=None, tracks=None, type=None,
+    uri=None, sp=None, precache=False, *args, **kwargs):
         self.id = id
         self.name = name
         self.owner = owner if isinstance(owner, SpotiwiseUser) else SpotiwiseUser(**owner, sp=sp)

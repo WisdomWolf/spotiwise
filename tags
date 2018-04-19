@@ -27,19 +27,11 @@ PAPEROPT_letter	docs/Makefile	/^PAPEROPT_letter = -D latex_paper_size=letter$/;"
 SPHINXBUILD	docs/Makefile	/^SPHINXBUILD   = sphinx-build$/;"	m
 SPHINXBUILD	docs/make.bat	/^	set SPHINXBUILD=sphinx-build$/;"	v
 SPHINXOPTS	docs/Makefile	/^SPHINXOPTS    =$/;"	m
-Scrobbler	spotipy/spotipy_classes.py	/^class Scrobbler(object):$/;"	c
 Spotify	spotipy/client.py	/^class Spotify(object):$/;"	c
 SpotifyClientCredentials	spotipy/oauth2.py	/^class SpotifyClientCredentials(object):$/;"	c
 SpotifyException	spotipy/client.py	/^class SpotifyException(Exception):$/;"	c
 SpotifyOAuth	spotipy/oauth2.py	/^class SpotifyOAuth(object):$/;"	c
 SpotifyOauthError	spotipy/oauth2.py	/^class SpotifyOauthError(Exception):$/;"	c
-SpotipyAlbum	spotipy/spotipy_classes.py	/^class SpotipyAlbum(_SpotipyBase):$/;"	c
-SpotipyArtist	spotipy/spotipy_classes.py	/^class SpotipyArtist(_SpotipyBase):$/;"	c
-SpotipyItem	spotipy/spotipy_classes.py	/^class SpotipyItem(_SpotipyBase):$/;"	c
-SpotipyPlayback	spotipy/spotipy_classes.py	/^class SpotipyPlayback(_SpotipyBase):$/;"	c
-SpotipyPlaylist	spotipy/spotipy_classes.py	/^class SpotipyPlaylist(_SpotipyBase):$/;"	c
-SpotipyTrack	spotipy/spotipy_classes.py	/^class SpotipyTrack(_SpotipyBase):$/;"	c
-SpotipyTypes	spotipy/spotipy_classes.py	/^SpotipyTypes = {$/;"	v
 SpotiwiseAlbum	spotipy/object_classes.py	/^class SpotiwiseAlbum(_SpotiwiseBase):$/;"	c
 SpotiwiseArtist	spotipy/object_classes.py	/^class SpotiwiseArtist(_SpotiwiseBase):$/;"	c
 SpotiwiseItem	spotipy/object_classes.py	/^class SpotiwiseItem(_SpotiwiseBase):$/;"	c
@@ -49,7 +41,6 @@ SpotiwiseTrack	spotipy/object_classes.py	/^class SpotiwiseTrack(_SpotiwiseBase):
 SpotiwiseUser	spotipy/object_classes.py	/^class SpotiwiseUser(_SpotiwiseBase):$/;"	c
 TestSpotifyOAuth	tests/test_oauth.py	/^class TestSpotifyOAuth(unittest.TestCase):$/;"	c
 TestSpotipy	tests/tests.py	/^class TestSpotipy(unittest.TestCase):$/;"	c
-_SpotipyBase	spotipy/spotipy_classes.py	/^class _SpotipyBase(object):$/;"	c
 _SpotiwiseBase	spotipy/object_classes.py	/^class _SpotiwiseBase(object):$/;"	c
 __init__	spotipy/client.py	/^    def __init__(self, auth=None, requests_session=True,$/;"	m	class:Spotify
 __init__	spotipy/client.py	/^    def __init__(self, http_status, code, msg, headers=None):$/;"	m	class:SpotifyException
@@ -60,22 +51,13 @@ __init__	spotipy/object_classes.py	/^    def __init__(self, id, display_name=Non
 __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, album, artists, available_markets=None, disc_number=None, $/;"	m	class:SpotiwiseTrack
 __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, album_type=None, artists=None, available_markets=None, external_urls=None, href=None, images=None, type=None, uri=None, *args, **kwargs):$/;"	m	class:SpotiwiseAlbum
 __init__	spotipy/object_classes.py	/^    def __init__(self, id, name, external_urls=None, href=None, type=None, uri=None, *args, **kwargs):$/;"	m	class:SpotiwiseArtist
-__init__	spotipy/object_classes.py	/^    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None, $/;"	m	class:SpotiwisePlaylist
+__init__	spotipy/object_classes.py	/^    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None,$/;"	m	class:SpotiwisePlaylist
 __init__	spotipy/object_classes.py	/^    def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):$/;"	m	class:SpotiwisePlayback
 __init__	spotipy/object_classes.py	/^    def __init__(self, track, added_at=None, added_by='', is_local=False):$/;"	m	class:SpotiwiseItem
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, href=None, type=None, uri=None):$/;"	m	class:_SpotipyBase
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, id, name, album, artists, available_markets=None, disc_number=None, $/;"	m	class:SpotipyTrack
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, id, name, album_type=None, artists=None, available_markets=None, external_urls=None, href=None, images=None, type=None, uri=None, *args, **kwargs):$/;"	m	class:SpotipyAlbum
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, id, name, external_urls=None, href=None, type=None, uri=None, *args, **kwargs):$/;"	m	class:SpotipyArtist
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None, $/;"	m	class:SpotipyPlaylist
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):$/;"	m	class:SpotipyPlayback
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, spotify, lastfm_user, lastfm_network, current_track=None):$/;"	m	class:Scrobbler
-__init__	spotipy/spotipy_classes.py	/^    def __init__(self, track, added_at=None, added_by='', is_local=False):$/;"	m	class:SpotipyItem
 __len__	spotipy/object_classes.py	/^    def __len__(self):$/;"	m	class:SpotiwisePlaylist	file:
 __repr__	spotipy/object_classes.py	/^    def __repr__(self):$/;"	m	class:_SpotiwiseBase	file:
-__repr__	spotipy/spotipy_classes.py	/^    def __repr__(self):$/;"	m	class:_SpotipyBase	file:
 __str__	spotipy/client.py	/^    def __str__(self):$/;"	m	class:SpotifyException	file:
-__version__	spotipy/__init__.py	/^__version__='0.6'$/;"	v
+__version__	spotipy/__init__.py	/^__version__='0.6.1'$/;"	v
 _add_custom_values_to_token_info	spotipy/oauth2.py	/^    def _add_custom_values_to_token_info(self, token_info):$/;"	m	class:SpotifyClientCredentials
 _add_custom_values_to_token_info	spotipy/oauth2.py	/^    def _add_custom_values_to_token_info(self, token_info):$/;"	m	class:SpotifyOAuth
 _album	spotipy/client.py	/^    def _album(self, album_id):$/;"	m	class:Spotify
@@ -104,7 +86,6 @@ _put	spotipy/client.py	/^    def _put(self, url, args=None, payload=None, **kwar
 _request_access_token	spotipy/oauth2.py	/^    def _request_access_token(self):$/;"	m	class:SpotifyClientCredentials
 _save_token_info	spotipy/oauth2.py	/^    def _save_token_info(self, token_info):$/;"	m	class:SpotifyOAuth
 _sort	spotipy/object_classes.py	/^    def _sort(self, key):$/;"	m	class:_SpotiwiseBase
-_sort	spotipy/spotipy_classes.py	/^    def _sort(key):$/;"	m	class:_SpotipyBase
 _token_file	tests/test_oauth.py	/^def _token_file(token):$/;"	f
 _track	spotipy/client.py	/^    def _track(self, track_id):$/;"	m	class:Spotify
 _tracks	spotipy/client.py	/^    def _tracks(self, tracks, market=None):$/;"	m	class:Spotify
@@ -162,7 +143,6 @@ client_credentials_manager	tests/authtests2.py	/^    client_credentials_manager 
 collaborative	examples/change_playlist_details.py	/^        collaborative = sys.argv[5].lower() == 'true'$/;"	v
 collaborative	examples/change_playlist_details.py	/^    collaborative = None$/;"	v
 copyright	docs/conf.py	/^copyright = '2014, Paul Lamere'$/;"	v
-create_lastfm_tuple	spotipy/spotipy_classes.py	/^def create_lastfm_tuple(spotify_now_playing):$/;"	f
 creep_id	tests/tests.py	/^    creep_id = '3HfB5hBU0dmBt8T0iCmH42'$/;"	v	class:TestSpotipy
 creep_url	tests/tests.py	/^    creep_url = 'http:\/\/open.spotify.com\/track\/3HfB5hBU0dmBt8T0iCmH42'$/;"	v	class:TestSpotipy
 creep_urn	tests/tests.py	/^    creep_urn = 'spotify:track:3HfB5hBU0dmBt8T0iCmH42'$/;"	v	class:TestSpotipy
@@ -191,7 +171,6 @@ devices	spotipy/client.py	/^    def devices(self):$/;"	m	class:Spotify
 el_scorcho_bad_urn	tests/tests.py	/^    el_scorcho_bad_urn = 'spotify:track:0Svkvt5I79wficMFgaqEQK'$/;"	v	class:TestSpotipy
 el_scorcho_urn	tests/tests.py	/^    el_scorcho_urn = 'spotify:track:0Svkvt5I79wficMFgaqEQJ'$/;"	v	class:TestSpotipy
 end	docs/make.bat	/^:end$/;"	l
-example_track	spotipy/spotipy_classes.py	/^        example_track = json.load(f)$/;"	v
 exclude_patterns	docs/conf.py	/^exclude_patterns = ['_build']$/;"	v
 extensions	docs/conf.py	/^extensions = ['sphinx.ext.autodoc']$/;"	v
 featured_playlists	spotipy/client.py	/^    def featured_playlists(self, locale=None, country=None, timestamp=None,$/;"	m	class:Spotify
@@ -210,7 +189,6 @@ get_artist	examples/artist_recommendations.py	/^def get_artist(name):$/;"	f
 get_authorize_url	spotipy/oauth2.py	/^    def get_authorize_url(self, state=None, show_dialog=False):$/;"	m	class:SpotifyOAuth
 get_aws_auth	spotipy/oauth2.py	/^def get_aws_auth(url):$/;"	f
 get_cached_token	spotipy/oauth2.py	/^    def get_cached_token(self):$/;"	m	class:SpotifyOAuth
-get_currently_playing	spotipy/spotipy_classes.py	/^def get_currently_playing():$/;"	f
 get_or_create_spotify_playlist	tests/authtests.py	/^    def get_or_create_spotify_playlist(self, username, playlist_name):$/;"	m	class:AuthTestSpotipy
 html_static_path	docs/conf.py	/^html_static_path = ['_static']$/;"	v
 html_theme	docs/conf.py	/^html_theme = 'default'$/;"	v
@@ -224,7 +202,6 @@ latex_documents	docs/conf.py	/^latex_documents = [$/;"	v
 latex_elements	docs/conf.py	/^latex_elements = {$/;"	v
 license	setup.py	/^    license='LICENSE.txt',$/;"	v
 lz_uri	examples/simple2.py	/^lz_uri = 'spotify:artist:36QJpDe2go2KgaRleHCDTp'$/;"	v
-mad_parser	spotipy/spotipy_classes.py	/^def mad_parser(thing):$/;"	f
 make_chain	examples/title_chain.py	/^def make_chain(word):$/;"	f
 man_pages	docs/conf.py	/^man_pages = [$/;"	v
 master_doc	docs/conf.py	/^master_doc = 'index'$/;"	v
@@ -271,7 +248,6 @@ playlists	examples/user_public_playlists.py	/^playlists = sp.user_playlists(user
 previous	spotipy/client.py	/^    def previous(self, result):$/;"	m	class:Spotify
 previous_track	spotipy/client.py	/^    def previous_track(self, device_id = None):$/;"	m	class:Spotify
 progress	spotipy/object_classes.py	/^    def progress(self):$/;"	m	class:SpotiwisePlayback
-progress	spotipy/spotipy_classes.py	/^    def progress(self):$/;"	m	class:SpotipyPlayback
 project	docs/conf.py	/^project = 'spotipy'$/;"	v
 prompt_for_user_token	spotipy/util.py	/^def prompt_for_user_token(username, scope=None, client_id=None,$/;"	f
 public	examples/change_playlist_details.py	/^        public = sys.argv[4].lower() == 'true'$/;"	v
@@ -340,8 +316,6 @@ scope	examples/remove_specific_tracks_from_playlist.py	/^scope = 'playlist-modif
 scope	examples/remove_tracks_from_playlist.py	/^scope = 'playlist-modify-public'$/;"	v
 scope	examples/replace_tracks_in_playlist.py	/^scope = 'playlist-modify-public'$/;"	v
 scope	examples/show_my_saved_tracks.py	/^scope = 'user-library-read'$/;"	v
-scrobble_check	spotipy/spotipy_classes.py	/^    def scrobble_check(self):$/;"	m	class:Scrobbler
-scrobbler	spotipy/spotipy_classes.py	/^def scrobbler(sp, lastfm_user, lastfm_network):$/;"	f
 search	spotipy/client.py	/^    def search(self, q, limit=10, offset=0, type='track', market=None):$/;"	m	class:Spotify
 search_str	examples/client_credentials_flow.py	/^search_str = 'Muse'$/;"	v
 search_str	examples/search.py	/^    search_str = 'Radiohead'$/;"	v
@@ -517,7 +491,6 @@ tracks	spotipy/client.py	/^    def tracks(self, tracks, market=None):$/;"	m	clas
 transfer_playback	spotipy/client.py	/^    def transfer_playback(self, device_id, force_play = True):$/;"	m	class:Spotify
 two_tracks	tests/authtests.py	/^    two_tracks = ["spotify:track:6RtPijgfPKROxEzTHNRiDp", $/;"	v	class:AuthTestSpotipy
 two_tracks	tests/authtests2.py	/^    two_tracks = ["spotify:track:6RtPijgfPKROxEzTHNRiDp", $/;"	v	class:AuthTestSpotipy
-update_track	spotipy/spotipy_classes.py	/^    def update_track(self, track=None):$/;"	m	class:Scrobbler
 uri	examples/read_a_playlist.py	/^uri = 'spotify:user:spotifycharts:playlist:37i9dQZEVXbJiZcmkrIHGU'$/;"	v
 uri	examples/show_related.py	/^    uri = result['artists']['items'][0]['uri']$/;"	v
 url	setup.py	/^    url='http:\/\/spotipy.readthedocs.org\/',$/;"	v
