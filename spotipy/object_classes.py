@@ -4,7 +4,7 @@ class _SpotiwiseBase(object):
 
     sort_keys = ['id', 'name']
     repr_attributes = None
-    
+
     def __init__(self, href=None, type=None, uri=None):
         self.href = href
         self.type = type
@@ -37,7 +37,7 @@ class _SpotiwiseBase(object):
 class SpotiwiseArtist(_SpotiwiseBase):
 
     repr_attributes = ['name']
-    
+
     def __init__(self, id, name, external_urls=None, href=None, type=None, uri=None, *args, **kwargs):
         self.id = id
         self.name = name
@@ -50,7 +50,7 @@ class SpotiwiseArtist(_SpotiwiseBase):
 
 
 class SpotiwiseAlbum(_SpotiwiseBase):
-    
+
     repr_attributes = ['name', 'artist']
 
     def __init__(self, id, name, album_type=None, artists=None, available_markets=None, external_urls=None, href=None, images=None, type=None, uri=None, *args, **kwargs):
@@ -69,12 +69,12 @@ class SpotiwiseAlbum(_SpotiwiseBase):
 
 
 class SpotiwiseTrack(_SpotiwiseBase):
-                               
+
     repr_attributes = ['name', 'artist']
 
-    def __init__(self, id, name, album, artists, available_markets=None, disc_number=None, 
-    duration_ms=0, explicit=False, external_ids=None, external_urls=None, href=None, 
-    popularity=None, preview_url=None, track_number=None, type=None, uri=None, *args, **kwargs):
+    def __init__(self, id, name, album, artists, available_markets=None, disc_number=None,
+    duration_ms=0, explicit=False, external_ids=None, external_urls=None, href=None,
+    popularity=None, preview_url=None, track_number=None, type=None, uri=None, episode=False, is_local=False, track=True, *args, **kwargs):
         self.id = id
         self.name = name
         self.album = album if isinstance(album, SpotiwiseAlbum) else SpotiwiseAlbum(**album)
@@ -159,15 +159,15 @@ class SpotiwisePlaylist(_SpotiwiseBase):
             self.tracks = [item.track for item in self.items]
         except TypeError:
             self.tracks = self._tracks
-                
+
     def __len__(self):
         return len(self.tracks)
-    
-    
+
+
 class SpotiwiseUser(_SpotiwiseBase):
-    
+
     repr_attributes = ['display_name']
-    
+
     def __init__(self, id, display_name=None, href=None, external_urls=None, images=None, followers=None, 
                  type=None, uri=None, sp=None):
         self.id = id
