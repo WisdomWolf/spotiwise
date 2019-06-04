@@ -9,22 +9,6 @@ import sys
 
 import re
 from urllib import parse as urlparse
-from aws_requests_auth.aws_auth import AWSRequestsAuth
-from aws_requests_auth import boto_utils
-
-def get_aws_auth(url):
-    api_gateway_netloc = urlparse.urlparse(url).netloc
-    api_gateway_region = re.match(
-        r"[a-z0-9]+\.execute-api\.(.+)\.amazonaws\.com",
-        api_gateway_netloc
-    ).group(1)
-
-    return AWSRequestsAuth(
-        aws_host=api_gateway_netloc,
-        aws_region=api_gateway_region,
-        aws_service='execute-api',
-        **boto_utils.get_credentials()
-    )
 
 # Workaround to support both python 2 & 3
 import six
@@ -48,7 +32,7 @@ def is_token_expired(token_info):
 class SpotifyClientCredentials(object):
     OAUTH_TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
-    def __init__(self, client_id=None, client_secret=None, proxies=None, token_url=None):
+    def __init__(self, client_id=None, client_secret=None, proxies=None, token_url=None, auth_func=None):
         """
         You can either provid a client_id and client_secret to the
         constructor or set SPOTIPY_CLIENT_ID and SPOTIPY_CLIENT_SECRET
@@ -71,6 +55,7 @@ class SpotifyClientCredentials(object):
         self.client_secret = client_secret
         self.token_info = None
         self.proxies = proxies
+        self._auth_func = auth_func
 
     def get_access_token(self):
         """
@@ -92,7 +77,7 @@ class SpotifyClientCredentials(object):
         # TODO: Break out to custom callback so that AWS utils aren't required
         if self.custom_token_url:
             headers = {'Accept-Encoding': None}
-            auth = get_aws_auth(self.OAUTH_TOKEN_URL)
+            auth = self._auth_func(self.OAUTH_TOKEN_URL)
         else:
             headers = _make_authorization_headers(self.client_id, self.client_secret)
             auth = None
