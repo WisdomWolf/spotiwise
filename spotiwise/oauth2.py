@@ -110,7 +110,7 @@ class SpotifyOAuth(object):
     OAUTH_TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
     def __init__(self, client_id, client_secret, redirect_uri,
-            state=None, scope=None, cache_path=None, proxies=None, token_url=None):
+            state=None, scope=None, cache_path=None, proxies=None, token_url=None, auth_func=None):
         '''
             Creates a SpotifyOAuth object
 
@@ -131,6 +131,7 @@ class SpotifyOAuth(object):
         self.scope=self._normalize_scope(scope)
         self.proxies = proxies
         self.custom_token_url = True if token_url else False
+        self._auth_func = auth_func
 
         if token_url:
             self.OAUTH_TOKEN_URL = token_url
@@ -232,7 +233,7 @@ class SpotifyOAuth(object):
             auth = None
         else:
             headers = {'Accept-Encoding': None}
-            auth = get_aws_auth(self.OAUTH_TOKEN_URL)
+            auth = self._auth_func(self.OAUTH_TOKEN_URL)
 
         response = requests.post(self.OAUTH_TOKEN_URL, data=payload,
             headers=headers, auth=auth, verify=True, proxies=self.proxies)
