@@ -1,12 +1,12 @@
 # -*- coding: latin-1 -*-
 
-import spotipy
-from  spotipy import util
+import spotiwise
+from  spotiwise import util
 import unittest
 import pprint
 import sys
 import simplejson as json
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotiwise.oauth2 import SpotifyClientCredentials
 
 '''
     Since these tests require authentication they are maintained
@@ -65,6 +65,6 @@ class AuthTestSpotipy(unittest.TestCase):
 
 if __name__ == '__main__':
     client_credentials_manager = SpotifyClientCredentials()
-    spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+    spotify = spotiwise.Spotify(client_credentials_manager=client_credentials_manager)
     spotify.trace = False
     unittest.main()

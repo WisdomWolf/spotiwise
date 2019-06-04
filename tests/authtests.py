@@ -1,7 +1,7 @@
 # -*- coding: latin-1 -*-
 
-import spotipy
-from  spotipy import util
+import spotiwise
+from  spotiwise import util
 import unittest
 import pprint
 import sys
@@ -39,7 +39,7 @@ class AuthTestSpotipy(unittest.TestCase):
         try:
             track = spotify.track(self.bad_id)
             self.assertTrue(False)
-        except spotipy.SpotifyException:
+        except spotiwise.SpotifyException:
             self.assertTrue(True)
 
 
@@ -168,7 +168,7 @@ class AuthTestSpotipy(unittest.TestCase):
     def test_user_playlist_ops(self):
         # create empty playlist
         playlist_id = self.get_or_create_spotify_playlist(username, 
-                'spotipy-testing-playlist-1')
+                'spotiwise-testing-playlist-1')
 
         # remove all tracks from it
 
@@ -215,7 +215,7 @@ if __name__ == '__main__':
         scope += 'user-top-read'
 
         token = util.prompt_for_user_token(username, scope)
-        spotify = spotipy.Spotify(auth=token)
+        spotify = spotiwise.Spotify(auth=token)
         spotify.trace = False
         unittest.main()
     else:

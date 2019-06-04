@@ -1,7 +1,7 @@
 # -*- coding: latin-1 -*-
 
-import spotipy
-from  spotipy.oauth2 import SpotifyClientCredentials
+import spotiwise
+from  spotiwise.oauth2 import SpotifyClientCredentials
 import unittest
 
 '''
@@ -22,6 +22,6 @@ class ClientCredentialsTestSpotipy(unittest.TestCase):
 
 if __name__ == '__main__':
     spotify_cc = SpotifyClientCredentials()
-    spotify = spotipy.Spotify(client_credentials_manager=spotify_cc)
+    spotify = spotiwise.Spotify(client_credentials_manager=spotify_cc)
     spotify.trace = False
     unittest.main()

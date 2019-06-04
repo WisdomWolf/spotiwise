@@ -1,4 +1,4 @@
-from spotipy.oauth2 import SpotifyOAuth
+from spotiwise.oauth2 import SpotifyOAuth
 import json
 import io
 import unittest
@@ -41,7 +41,7 @@ class OAuthCacheTest(unittest.TestCase):
 
     @patch.multiple(SpotifyOAuth,
                     is_token_expired=DEFAULT, refresh_access_token=DEFAULT)
-    @patch('spotipy.oauth2.open', create=True)
+    @patch('spotiwise.oauth2.open', create=True)
     def test_gets_from_cache_path(self, opener,
                                   is_token_expired, refresh_access_token):
         scope = "playlist-modify-private"
@@ -60,7 +60,7 @@ class OAuthCacheTest(unittest.TestCase):
 
     @patch.multiple(SpotifyOAuth,
                     is_token_expired=DEFAULT, refresh_access_token=DEFAULT)
-    @patch('spotipy.oauth2.open', create=True)
+    @patch('spotiwise.oauth2.open', create=True)
     def test_expired_token_refreshes(self, opener,
                                      is_token_expired, refresh_access_token):
         scope = "playlist-modify-private"
@@ -81,7 +81,7 @@ class OAuthCacheTest(unittest.TestCase):
 
     @patch.multiple(SpotifyOAuth,
                     is_token_expired=DEFAULT, refresh_access_token=DEFAULT)
-    @patch('spotipy.oauth2.open', create=True)
+    @patch('spotiwise.oauth2.open', create=True)
     def test_badly_scoped_token_bails(self, opener,
                                       is_token_expired, refresh_access_token):
         token_scope = "playlist-modify-public"
@@ -99,7 +99,7 @@ class OAuthCacheTest(unittest.TestCase):
         self.assertIsNone(cached_tok)
         self.assertEqual(refresh_access_token.call_count, 0)
 
-    @patch('spotipy.oauth2.open', create=True)
+    @patch('spotiwise.oauth2.open', create=True)
     def test_saves_to_cache_path(self, opener):
         scope = "playlist-modify-private"
         path = ".cache-username"

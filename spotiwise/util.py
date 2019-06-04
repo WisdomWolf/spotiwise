@@ -4,13 +4,13 @@
 from __future__ import print_function
 import os
 from . import oauth2
-import spotipy
+import spotiwise
 
 def prompt_for_user_token(username, scope=None, client_id=None,
         client_secret=None, redirect_uri=None, cache_path=None,
                           token_url=None):
     ''' prompts the user to login if necessary and returns
-        the user token suitable for use with the spotipy.Spotify 
+        the user token suitable for use with the spotiwise.Spotify 
         constructor
 
         Parameters:
@@ -42,7 +42,7 @@ def prompt_for_user_token(username, scope=None, client_id=None,
             Get your credentials at     
                 https://developer.spotify.com/my-applications
         ''')
-        raise spotipy.SpotifyException(550, -1, 'no credentials set')
+        raise spotiwise.SpotifyException(550, -1, 'no credentials set')
 
     cache_path = cache_path or ".cache-" + username
     sp_oauth = oauth2.SpotifyOAuth(client_id, client_secret, redirect_uri, 

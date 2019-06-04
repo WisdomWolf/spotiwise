@@ -1,9 +1,9 @@
 # -*- coding: latin-1 -*-
-import spotipy
+import spotiwise
 import unittest
 import pprint
 import requests
-from spotipy.client import SpotifyException
+from spotiwise.client import SpotifyException
 
 
 class TestSpotipy(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestSpotipy(unittest.TestCase):
     bad_id = 'BAD_ID'
 
     def setUp(self):
-        self.spotify = spotipy.Spotify()
+        self.spotify = spotiwise.Spotify()
 
     def test_artist_urn(self):
         artist = self.spotify.artist(self.radiohead_urn)
@@ -74,7 +74,7 @@ class TestSpotipy(unittest.TestCase):
         try:
             track = self.spotify.track(self.el_scorcho_bad_urn)
             self.assertTrue(False)
-        except spotipy.SpotifyException:
+        except spotiwise.SpotifyException:
             self.assertTrue(True)
 
     def test_tracks(self):
@@ -121,7 +121,7 @@ class TestSpotipy(unittest.TestCase):
         self.assertTrue(found)
 
     def test_search_timeout(self):
-        sp = spotipy.Spotify(requests_timeout=.1)
+        sp = spotiwise.Spotify(requests_timeout=.1)
         try:
             results = sp.search(q='my*', type='track')
             self.assertTrue(False, 'unexpected search timeout')
@@ -149,14 +149,14 @@ class TestSpotipy(unittest.TestCase):
         try:
             track = self.spotify.track(self.bad_id)
             self.assertTrue(False)
-        except spotipy.SpotifyException:
+        except spotiwise.SpotifyException:
             self.assertTrue(True)
 
     def test_track_bad_id(self):
         try:
             track = self.spotify.track(self.bad_id)
             self.assertTrue(False)
-        except spotipy.SpotifyException:
+        except spotiwise.SpotifyException:
             self.assertTrue(True)
 
     def test_unauthenticated_post_fails(self):
@@ -168,13 +168,13 @@ class TestSpotipy(unittest.TestCase):
     def test_custom_requests_session(self):
         from requests import Session
         sess = Session()
-        sess.headers["user-agent"] = "spotipy-test"
-        with_custom_session = spotipy.Spotify(requests_session=sess)
+        sess.headers["user-agent"] = "spotiwise-test"
+        with_custom_session = spotiwise.Spotify(requests_session=sess)
         self.assertTrue(with_custom_session.user(user="akx")["uri"] == "spotify:user:akx")
 
     def test_force_no_requests_session(self):
         from requests import Session
-        with_no_session = spotipy.Spotify(requests_session=False)
+        with_no_session = spotiwise.Spotify(requests_session=False)
         self.assertFalse(isinstance(with_no_session._session, Session))
         self.assertTrue(with_no_session.user(user="akx")["uri"] == "spotify:user:akx")
 

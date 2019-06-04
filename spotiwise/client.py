@@ -34,10 +34,10 @@ class Spotify(object):
     """
         Example usage::
 
-            import spotipy
+            import spotiwise
 
             urn = 'spotify:artist:3jOstUTkEu2JkjvRdBA5Gu'
-            sp = spotipy.Spotify()
+            sp = spotiwise.Spotify()
 
             sp.trace = True # turn on tracing
             sp.trace_out = True # turn on trace out

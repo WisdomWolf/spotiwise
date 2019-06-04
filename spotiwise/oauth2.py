@@ -89,6 +89,7 @@ class SpotifyClientCredentials(object):
         """Gets client credentials access token """
         payload = { 'grant_type': 'client_credentials'}
 
+        # TODO: Break out to custom callback so that AWS utils aren't required
         if self.custom_token_url:
             headers = {'Accept-Encoding': None}
             auth = get_aws_auth(self.OAUTH_TOKEN_URL)
