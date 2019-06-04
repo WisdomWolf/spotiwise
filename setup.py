@@ -2,7 +2,7 @@ from setuptools import setup
 import spotiwise
 
 setup(
-    name='spotwise',
+    name='spotiwise',
     version=spotiwise.__version__,
     description='simple client for the Spotify Web API',
     author="WisdomWolf",
