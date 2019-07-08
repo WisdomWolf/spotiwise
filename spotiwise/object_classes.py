@@ -168,13 +168,26 @@ class SpotiwiseUser(_SpotiwiseBase):
 
     repr_attributes = ['display_name']
 
-    def __init__(self, id, display_name=None, href=None, external_urls=None, images=None, followers=None, 
-                 type=None, uri=None, sp=None):
+    def __init__(
+            self,
+            id,
+            display_name=None,
+            href=None,
+            external_urls=None,
+            images=None,
+            followers=None,
+            type=None,
+            uri=None,
+            sp=None,
+            *args,
+            **kwargs
+    ):
         self.id = id
         if sp:
-            user = SpotiwiseUser(**sp._user(self.id))
-            for k, v in user.__dict__.items():
-                setattr(self, k, v)
+            #user = SpotiwiseUser(**sp._user(self.id))
+            #for k, v in user.__dict__.items():
+                #setattr(self, k, v)
+            user = sp.user(self.id)
         else:
             self.display_name = display_name or '__{}__'.format(self.id)
             self.href = href
