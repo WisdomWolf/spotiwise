@@ -464,7 +464,7 @@ class Spotify(object):
                 - offset - the index of the first item to return
         """
         results = self._current_user_playlists(limit, offset).get('items')
-        return [SpotiwisePlaylist(**playlist) for playlist in results]
+        return [SpotiwisePlaylist(sp=self, **playlist) for playlist in results]
 
     # TODO: Migrate to Spotiwise object model
     def user_playlists(self, user, limit=50, offset=0):

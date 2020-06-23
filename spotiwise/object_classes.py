@@ -1,14 +1,22 @@
 from datetime import date
+from logging import getLogger
+
+import spotiwise
+
+logger = getLogger(__name__)
 
 class _SpotiwiseBase(object):
 
     sort_keys = ['id', 'name']
     repr_attributes = None
 
-    def __init__(self, href=None, type=None, uri=None):
+    def __init__(self, href=None, type=None, uri=None, sp=None, *args, **kwargs):
         self.href = href
         self.type = type
         self.uri = uri
+        self.sp = sp
+        self._args = args
+        self._kwargs = kwargs
 
     def __repr__(self):
         repr_list = []
@@ -38,34 +46,30 @@ class SpotiwiseArtist(_SpotiwiseBase):
 
     repr_attributes = ['name']
 
-    def __init__(self, id, name, external_urls=None, href=None, type=None, uri=None, *args, **kwargs):
+    def __init__(self, id, name, external_urls=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.id = id
         self.name = name
         self.external_urls=external_urls
-        self.href = href
-        self.type = type
-        self.uri = uri
-        self._args = args
-        self._kwargs = kwargs
 
 
 class SpotiwiseAlbum(_SpotiwiseBase):
 
     repr_attributes = ['name', 'artist']
 
-    def __init__(self, id, name, album_type=None, artists=None, available_markets=None, external_urls=None, href=None, images=None, type=None, uri=None, *args, **kwargs):
+    def __init__(self, id, name, album_type=None, artists=None, available_markets=None, external_urls=None, images=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.id = id
         self.name = name
         self.external_urls = external_urls or []
         self._artists = [SpotiwiseArtist(**artist) if not isinstance(artist, SpotiwiseArtist) else artist for artist in artists]
-        self.artist = self._artists[0].name
+        try:
+            self.artist = self._artists[0].name
+        except IndexError:
+            logger.warning('Unable to parse artist name from %s.', artists)
+            self.artist = artists
         self.available_markets = available_markets or []
-        self.href = href
         self.images = images or []
-        self.type = type
-        self.uri = uri
-        self._args = args
-        self._kwargs = kwargs
 
 
 class SpotiwiseTrack(_SpotiwiseBase):
@@ -73,8 +77,9 @@ class SpotiwiseTrack(_SpotiwiseBase):
     repr_attributes = ['name', 'artist']
 
     def __init__(self, id, name, album, artists, available_markets=None, disc_number=None,
-    duration_ms=0, explicit=False, external_ids=None, external_urls=None, href=None,
-    popularity=None, preview_url=None, track_number=None, type=None, uri=None, episode=False, is_local=False, track=True, *args, **kwargs):
+    duration_ms=0, explicit=False, external_ids=None, external_urls=None,
+    popularity=None, preview_url=None, track_number=None, episode=False, is_local=False, track=True, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.id = id
         self.name = name
         self.album = album if isinstance(album, SpotiwiseAlbum) else SpotiwiseAlbum(**album)
@@ -87,15 +92,10 @@ class SpotiwiseTrack(_SpotiwiseBase):
         self.explicit = explicit
         self.external_ids = external_ids
         self.external_urls = external_urls
-        self.href = href
         self.popularity = popularity
         self.preview_url = preview_url
         self.track_number = track_number
-        self.type = type
-        self.uri = uri
         self.playcount = 0
-        self._args = args
-        self._kwargs = kwargs
 
 
 class SpotiwisePlayback(_SpotiwiseBase):
@@ -119,10 +119,13 @@ class SpotiwisePlayback(_SpotiwiseBase):
 
 class SpotiwiseItem(_SpotiwiseBase):
 
+    repr_attributes = ['track', 'added_at', 'added_by']
+
     def __init__(self, track, added_at=None, added_by='', is_local=False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.track = track if isinstance(track, SpotiwiseTrack) else SpotiwiseTrack(**track)
         self.added_at = added_at
-        self.added_by = added_by if isinstance(added_by, SpotiwiseUser) else SpotiwiseUser(**added_by)
+        self.added_by = added_by if isinstance(added_by, SpotiwiseUser) else SpotiwiseUser(sp=self.sp, **added_by)
         self.is_local = is_local
 
 
@@ -131,30 +134,29 @@ class SpotiwisePlaylist(_SpotiwiseBase):
     repr_attributes = ['name', 'owner', 'collaborative', 'description']
 
     def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None,
-    followers=None, href=None, images=None, public=True, snapshot_id=None, tracks=None, type=None,
-    uri=None, sp=None, precache=False, *args, **kwargs):
+    followers=None, images=None, public=True, snapshot_id=None, tracks=None,
+    precache=False, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.id = id
         self.name = name
-        self.owner = owner if isinstance(owner, SpotiwiseUser) else SpotiwiseUser(**owner, sp=sp)
+        self.owner = owner if isinstance(owner, SpotiwiseUser) else SpotiwiseUser(sp=self.sp, **owner)
         self.collaborative = collaborative
         self.description = description
         self.external_urls = external_urls
         self.followers = followers
-        self.href = href
         self.images = images
         self.public = public
         self.snapshot_id = snapshot_id
         self._tracks = tracks
-        self.type = type
-        self.uri = uri
         try:
             self.items = [SpotiwiseItem(**item) for item in self._tracks.get('items')]
         except TypeError: # Uninstantiated playlist (possibly from current_user_playlists())
-            self.items = None
+            self.items = []
         if precache:
-            while self._tracks['next']:
-                self._tracks = sp.next(self._tracks)
-                self.items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
+            self.load_tracks()
+            #while self._tracks['next']:
+             #   self._tracks = sp.next(self._tracks)
+             #    self.items.extend([SpotiwiseItem(**item) for item in self._tracks.get('items')])
         try:
             self.tracks = [item.track for item in self.items]
         except TypeError:
@@ -163,39 +165,50 @@ class SpotiwisePlaylist(_SpotiwiseBase):
     def __len__(self):
         return len(self.tracks)
 
+    def load_tracks(self, sp=None):
+        sp = sp or self.sp
+        if not sp:
+            raise RuntimeError('Need a spotify client reference to load tracks')
+
+        self.items = self.items or []
+
+        if 'next' not in self._tracks:
+            if 'href' in self._tracks:
+                self._tracks = sp._get(self._tracks.get('href'))
+                self.items = [SpotiwiseItem(sp=sp, **item) for item in self._tracks.get('items')]
+        while self._tracks.get('next'):
+            self._tracks = sp.next(self._tracks)
+            self.items.extend([SpotiwiseItem(sp=sp, **item) for item in self._tracks.get('items')])
+
+        try:
+            self.tracks = [item.track for item in self.items]
+        except TypeError:
+            self.tracks = self._tracks
+
 
 class SpotiwiseUser(_SpotiwiseBase):
 
     repr_attributes = ['display_name']
 
-    def __init__(
-            self,
-            id,
-            display_name=None,
-            href=None,
-            external_urls=None,
-            images=None,
-            followers=None,
-            type=None,
-            uri=None,
-            sp=None,
-            *args,
-            **kwargs
-    ):
+    def __init__(self, id, display_name=None, images=None, followers=None,
+                 external_urls=None, *args, **kwargs):
         self.id = id
-        if sp:
-            #user = SpotiwiseUser(**sp._user(self.id))
-            #for k, v in user.__dict__.items():
-                #setattr(self, k, v)
-            user = sp.user(self.id)
+        super().__init__(*args, **kwargs)
+        if self.sp:
+            print('Utilizing sp')
+            sp = self.sp
+            try:
+                user = SpotiwiseUser(**sp._user(self.id))
+                for k, v in user.__dict__.items():
+                    setattr(self, k, v)
+            except spotiwise.SpotifyException:
+                self.display_name = display_name or f'__{self.id}__'
         else:
+            print('No sp ref received')
             self.display_name = display_name or '__{}__'.format(self.id)
-            self.href = href
             self.external_urls = external_urls
             self.images = images
             self.followers = followers
-            self.type = type
-            self.uri = uri
 
     def __key(self):
         return (self.id, self.display_name, self.type, self.uri)
