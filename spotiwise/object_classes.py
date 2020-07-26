@@ -33,6 +33,12 @@ class _SpotiwiseBase(object):
                 repr_list.append('{}={}'.format(k, v))
         return '{}({})'.format(self.__class__.__name__, ', '.join(sorted(repr_list, key=self._sort)))
 
+    def __eq__(self, other):
+        if isinstance(other, _SpotiwiseBase):
+            return self.uri == other.uri
+        else:
+            return False
+
     def _sort(self, key):
         '''Used to ensure certain attributes are listed first'''
         key = key.split(':')[0].lower()
@@ -97,7 +103,6 @@ class SpotiwiseTrack(_SpotiwiseBase):
         self.track_number = track_number
         self.playcount = 0
 
-
 class SpotiwisePlayback(_SpotiwiseBase):
 
     def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):
@@ -127,6 +132,14 @@ class SpotiwiseItem(_SpotiwiseBase):
         self.added_at = added_at
         self.added_by = added_by if isinstance(added_by, SpotiwiseUser) else SpotiwiseUser(sp=self.sp, **added_by)
         self.is_local = is_local
+
+    def __eq__(self, other):
+        if isinstance(other, SpotiwiseItem):
+            return self.track == other.track \
+                and self.added_at == other.added_at \
+                and self.added_by == other.added_by
+        else:
+            return False
 
 
 class SpotiwisePlaylist(_SpotiwiseBase):
