@@ -208,7 +208,6 @@ class SpotiwiseUser(_SpotiwiseBase):
         self.id = id
         super().__init__(*args, **kwargs)
         if self.sp:
-            print('Utilizing sp')
             sp = self.sp
             try:
                 user = SpotiwiseUser(**sp._user(self.id))
@@ -217,7 +216,6 @@ class SpotiwiseUser(_SpotiwiseBase):
             except spotiwise.SpotifyException:
                 self.display_name = display_name or f'__{self.id}__'
         else:
-            print('No sp ref received')
             self.display_name = display_name or '__{}__'.format(self.id)
             self.external_urls = external_urls
             self.images = images
