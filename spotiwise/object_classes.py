@@ -176,7 +176,7 @@ class SpotiwisePlaylist(_SpotiwiseBase):
             self.tracks = self._tracks
 
     def __len__(self):
-        return len(self.tracks)
+        return self._tracks.get('total', -1)
 
     def load_tracks(self, sp=None):
         sp = sp or self.sp
