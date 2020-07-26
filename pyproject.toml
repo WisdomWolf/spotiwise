@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "spotiwise"
+version = "0.8.1"
+description = "Custom Spotify library using true Python objects"
+authors = ["Wisdom Wolf <wisdomwolf@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+requests = "==2.3.0"
+six = "==1.10.0"
+
+
+[tool.dephell.main]
+versioning = "semver"
+tag = "v."
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
