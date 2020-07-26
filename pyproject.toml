@@ -11,7 +11,10 @@ six = "==1.10.0"
 
 
 [tool.dephell.main]
+# read from poetry format
+from = {format = "poetry", path = "pyproject.toml"}
 versioning = "semver"
+to = {format = "poetry", path = "pyproject.toml"}
 tag = "v."
 
 [build-system]
