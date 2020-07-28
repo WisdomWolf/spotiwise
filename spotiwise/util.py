@@ -13,13 +13,6 @@ from .oauth2 import SpotifyOAuth
 
 LOGGER = logging.getLogger(__name__)
 
-CLIENT_CREDS_ENV_VARS = {
-    "client_id": "SPOTIPY_CLIENT_ID",
-    "client_secret": "SPOTIPY_CLIENT_SECRET",
-    "client_username": "SPOTIPY_CLIENT_USERNAME",
-    "redirect_uri": "SPOTIPY_REDIRECT_URI",
-}
-
 
 def prompt_for_user_token(
     username,
@@ -108,14 +101,3 @@ def prompt_for_user_token(
         return token
     else:
         return None
-
-
-def get_host_port(netloc):
-    if ":" in netloc:
-        host, port = netloc.split(":", 1)
-        port = int(port)
-    else:
-        host = netloc
-        port = None
-
-    return host, port

@@ -19,7 +19,7 @@ import warnings
 import webbrowser
 
 import requests
-from .util import CLIENT_CREDS_ENV_VARS, get_host_port
+from .constants import CLIENT_CREDS_ENV_VARS
 from .exceptions import SpotifyException
 
 import re
@@ -1204,6 +1204,17 @@ window.close()
 
     def log_message(self, format, *args):
         return
+
+
+def get_host_port(netloc):
+    if ":" in netloc:
+        host, port = netloc.split(":", 1)
+        port = int(port)
+    else:
+        host = netloc
+        port = None
+
+    return host, port
 
 
 def start_local_http_server(port, handler=RequestHandler):
