@@ -2,7 +2,7 @@
 
 """ Shows a user's playlists (need to be authenticated via oauth) """
 
-__all__ = ["CLIENT_CREDS_ENV_VARS", "prompt_for_user_token"]
+__all__ = ["prompt_for_user_token"]
 
 import logging
 import os
