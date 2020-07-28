@@ -1,2 +1,5 @@
-__version__='0.9.4'
-from .client import Spotify, SpotifyException
+__version__='0.10.0'
+from .client import *  # noqa
+from .oauth2 import *  # noqa
+from .util import *  # noqa
+from .exceptions import *  # noqa
