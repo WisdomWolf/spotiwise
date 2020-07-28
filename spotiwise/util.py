@@ -8,7 +8,8 @@ import logging
 import os
 import warnings
 
-import spotipy
+from .exceptions import SpotifyException
+from .oauth2 import SpotifyOAuth
 
 LOGGER = logging.getLogger(__name__)
 
@@ -77,11 +78,11 @@ def prompt_for_user_token(
                     https://developer.spotify.com/my-applications
             """
             )
-            raise spotipy.SpotifyException(550, -1, "no credentials set")
+            raise SpotifyException(550, -1, "no credentials set")
 
         cache_path = cache_path or ".cache-" + username
 
-    sp_oauth = oauth_manager or spotipy.SpotifyOAuth(
+    sp_oauth = oauth_manager or SpotifyOAuth(
         client_id,
         client_secret,
         redirect_uri,
