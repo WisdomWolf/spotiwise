@@ -1,18 +1,13 @@
 [tool.poetry]
 name = "spotiwise"
-version = "0.10.2"
+version = "0.10.3"
 description = "Custom Spotify library using true Python objects"
 authors = ["Wisdom Wolf <wisdomwolf@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = ">=3.6"
-requests = "==2.3.0"
-six = "==1.10.0"
-
-
-
-
-
+requests = ">=2.3.0"
+six = ">=1.10.0"
 
 
 
