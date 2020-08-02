@@ -410,12 +410,12 @@ class SpotifyOAuth(SpotifyAuthBase):
         self._open_auth_url()
         server.handle_request()
 
-        if self.state is not None and server.state != self.state:
+        if self.state and server.state != self.state:
             raise SpotifyStateError(self.state, server.state)
 
-        if server.auth_code is not None:
+        if server.auth_code:
             return server.auth_code
-        elif server.error is not None:
+        elif server.error:
             raise SpotifyOauthError("Received error from OAuth server: {}".format(server.error))
         else:
             raise SpotifyOauthError("Server listening on localhost has not been accessed")
