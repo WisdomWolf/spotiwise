@@ -103,6 +103,7 @@ class SpotiwiseTrack(_SpotiwiseBase):
         self.track_number = track_number
         self.playcount = 0
 
+
 class SpotiwisePlayback(_SpotiwiseBase):
 
     def __init__(self, item, timestamp=None, progress_ms=None, is_playing=False, context=None, *args, **kwargs):
@@ -146,13 +147,27 @@ class SpotiwisePlaylist(_SpotiwiseBase):
 
     repr_attributes = ['name', 'owner', 'collaborative', 'description']
 
-    def __init__(self, id, name, owner, collaborative=False, description=None, external_urls=None,
-    followers=None, images=None, public=True, snapshot_id=None, tracks=None,
-    precache=False, *args, **kwargs):
+    def __init__(
+            self,
+            id,
+            name,
+            owner,
+            collaborative=False,
+            description=None,
+            external_urls=None,
+            followers=None,
+            images=None,
+            public=True,
+            snapshot_id=None,
+            tracks=None,
+            precache=False,
+            *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.id = id
         self.name = name
-        self.owner = owner if isinstance(owner, SpotiwiseUser) else SpotiwiseUser(sp=self.sp, **owner)
+        self.owner = owner if isinstance(owner, SpotiwiseUser)\
+            else SpotiwiseUserFactory.get_instance(sp=self.sp, **owner)
         self.collaborative = collaborative
         self.description = description
         self.external_urls = external_urls
@@ -203,30 +218,46 @@ class SpotiwiseUser(_SpotiwiseBase):
 
     repr_attributes = ['display_name']
 
-    def __init__(self, id, display_name=None, images=None, followers=None,
+    def __init__(self, id_, display_name=None, images=None, followers=None,
                  external_urls=None, *args, **kwargs):
-        self.id = id
+        self.id = id_
         super().__init__(*args, **kwargs)
         if self.sp:
             sp = self.sp
             try:
                 user = SpotiwiseUser(**sp._user(self.id))
-                for k, v in user.__dict__.items():
+                for k, v in vars(user).items():
                     setattr(self, k, v)
             except spotiwise.SpotifyException:
                 self.display_name = display_name or f'__{self.id}__'
         else:
-            self.display_name = display_name or '__{}__'.format(self.id)
+            self.display_name = display_name or f'__{self.id}__'
             self.external_urls = external_urls
             self.images = images
             self.followers = followers
 
+    @property
     def __key(self):
-        return (self.id, self.display_name, self.type, self.uri)
+        return self.id, self.display_name, self.type, self.uri
 
-    def __eq__(x, y):
-        return x.__key() == y.__key()
+    def __eq__(self, other):
+        return self.__key == other.__key
 
     def __hash__(self):
-        return hash(self.__key())
+        return hash(self.__key)
 
+
+class SpotiwiseUserFactory:
+    registry = {}
+
+    @classmethod
+    def get_instance(cls, *args, **kwargs):
+        id_ = kwargs.get('id')
+        if id_ is None:
+            raise RuntimeError('Must provide an id')
+        if id_ in cls.registry:
+            instance = cls.registry[id_]
+        else:
+            instance = SpotiwiseUser(*args, **kwargs)
+            cls.registry[id_] = instance
+        return instance
