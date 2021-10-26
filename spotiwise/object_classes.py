@@ -258,6 +258,6 @@ class SpotiwiseUserFactory:
         if id_ in cls.registry:
             instance = cls.registry[id_]
         else:
-            instance = SpotiwiseUser(*args, **kwargs)
+            instance = SpotiwiseUser(id=id_, *args, **kwargs)
             cls.registry[id_] = instance
         return instance

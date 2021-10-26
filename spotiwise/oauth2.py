@@ -242,7 +242,7 @@ class SpotifyOAuth(SpotifyAuthBase):
         requests_timeout=None,
         token_url=None,
         auth_func=None,
-        open_browser=True
+        open_browser=False
     ):
         """
             Creates a SpotifyOAuth object
@@ -281,9 +281,15 @@ class SpotifyOAuth(SpotifyAuthBase):
         self.requests_timeout = requests_timeout
         self.show_dialog = show_dialog
 
-    def get_cached_token(self):
-        """ Gets a cached auth token
-        """
+    def get_cached_token(self, storage_type='file'):
+        """ Gets a cached auth token"""
+        if storage_type == 'file':
+            return self._get_cached_file_token()
+        elif storage_type == 'db':
+            return self._get_cached_db_token()
+
+    def _get_cached_file_token(self):
+        """ Gets a cached auth token from file"""
         token_info = None
 
         if not self.cache_path and self.username:
@@ -314,6 +320,10 @@ class SpotifyOAuth(SpotifyAuthBase):
             except IOError:
                 pass
         return token_info
+
+    def _get_cached_db_token(self):
+        """ Gets a cached auth token from database"""
+        pass
 
     def _save_token_info(self, token_info):
         if self.cache_path:
@@ -389,8 +399,8 @@ class SpotifyOAuth(SpotifyAuthBase):
         except webbrowser.Error:
             logger.error("Please navigate here: %s", auth_url)
 
-    def _get_auth_response_interactive(self, open_browser=True):
-        if self.open_browser:
+    def _get_auth_response_interactive(self, open_browser=False):
+        if self.open_browser or open_browser:
             self._open_auth_url()
             prompt = "Enter the URL you were redirected to: "
         else:

@@ -1,4 +1,4 @@
-__version__ = '0.10.5'
+__version__ = '0.10.6'
 from .client import *  # noqa
 from .oauth2 import *  # noqa
 from .util import *  # noqa
