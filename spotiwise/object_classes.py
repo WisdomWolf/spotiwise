@@ -131,7 +131,8 @@ class SpotiwiseItem(_SpotiwiseBase):
         super().__init__(*args, **kwargs)
         self.track = track if isinstance(track, SpotiwiseTrack) else SpotiwiseTrack(**track)
         self.added_at = added_at
-        self.added_by = added_by if isinstance(added_by, SpotiwiseUser) else SpotiwiseUser(sp=self.sp, **added_by)
+        self.added_by = added_by if isinstance(added_by, SpotiwiseUser) \
+            else SpotiwiseUserFactory.get_instance(sp=self.sp, **added_by)
         self.is_local = is_local
 
     def __eq__(self, other):
