@@ -218,9 +218,9 @@ class SpotiwiseUser(_SpotiwiseBase):
 
     repr_attributes = ['display_name']
 
-    def __init__(self, id_, display_name=None, images=None, followers=None,
+    def __init__(self, id, display_name=None, images=None, followers=None,
                  external_urls=None, *args, **kwargs):
-        self.id = id_
+        self.id = id
         super().__init__(*args, **kwargs)
         if self.sp:
             sp = self.sp
@@ -258,6 +258,6 @@ class SpotiwiseUserFactory:
         if id_ in cls.registry:
             instance = cls.registry[id_]
         else:
-            instance = SpotiwiseUser(id=id_, *args, **kwargs)
+            instance = SpotiwiseUser(*args, **kwargs)
             cls.registry[id_] = instance
         return instance
