@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spotiwise"
-version = "0.10.4"
+version = "0.10.5"
 description = "Custom Spotify library using true Python objects"
 authors = ["Wisdom Wolf <wisdomwolf@gmail.com>"]
 
