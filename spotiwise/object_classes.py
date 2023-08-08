@@ -204,10 +204,10 @@ class SpotiwisePlaylist(_SpotiwiseBase):
         if 'next' not in self._tracks:
             if 'href' in self._tracks:
                 self._tracks = sp._get(self._tracks.get('href'))
-                self.items = [SpotiwiseItem(sp=sp, **item) for item in self._tracks.get('items')]
+                self.items = [SpotiwiseItem(sp=sp, **item) for item in self._tracks.get('items') if item is not None]
         while self._tracks.get('next'):
             self._tracks = sp.next(self._tracks)
-            self.items.extend([SpotiwiseItem(sp=sp, **item) for item in self._tracks.get('items')])
+            self.items.extend([SpotiwiseItem(sp=sp, **item) for item in self._tracks.get('items') if item is not None])
 
         try:
             self.tracks = [item.track for item in self.items]
