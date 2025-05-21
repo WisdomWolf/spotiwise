@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "spotiwise"
-version = "0.10.8"
+version = "0.10.9"
 description = "Custom Spotify library using true Python objects"
 authors = ["Wisdom Wolf <wisdomwolf@gmail.com>"]
 
@@ -8,7 +8,7 @@ authors = ["Wisdom Wolf <wisdomwolf@gmail.com>"]
 python = ">=3.6"
 requests = ">=2.3.0"
 six = ">=1.10.0"
-
+spotipy = "^2.23.0"  # Use latest stable version
 
 
 
@@ -20,5 +20,5 @@ to = {format = "poetry", path = "pyproject.toml"}
 tag = "v."
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
